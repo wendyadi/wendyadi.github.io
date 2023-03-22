@@ -5,12 +5,14 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name=" robots" content="noindex, nofollow">
-<title>review buku | wendyadi.github.io</title>
+<title>Apa Itu Hashing? beda dengan Enkripsi | wendyadi.github.io</title>
 
-<meta name="keywords" content="" />
-<meta name="description" content="">
+<meta name="keywords" content="hashing, encryption" />
+<meta name="description" content="Hashing adalah suatu proses untuk merubah sebuah Key data atau string menjadi bentuk lain yang biasanya lebih ringkas/pendek. Bisa dikatakan juga Hashing adalah proses mengubah Key menjadi Hash menggunakan HashFunction.
+Perlu diingat beda dengan encrypt/decrypt, kita tidak bisa mendapatkan kembali Key dengan hanya mengetahui Hash nya saja.
+Jika kita meng-encrypt sebuah data maka kita bisa mengembalikan data yang sudah kita encrypt tadi asal kita tau cara decrypt (dekripsi) nya. Tapi kalau hashing itu satu arah, kalau sudah di hash; tidak bisa dikembalikan ke Key nya lagi.">
 <meta name="author" content="">
-<link rel="canonical" href="https://wendyadi.github.io/tags/review-buku/" />
+<link rel="canonical" href="https://wendyadi.github.io/posts/apa-itu-hashing/" />
 
 <link href="https://wendyadi.github.io/assets/css/stylesheet.min.css" rel="preload stylesheet" as="style">
 
@@ -22,14 +24,13 @@
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
 <meta name="generator" content="Hugo 0.111.3">
-<link rel="alternate" type="application/rss&#43;xml" href="https://wendyadi.github.io/tags/review-buku/index.xml">
 
 
 
 
 </head>
 
-<body class="list">
+<body class="">
 <script>
     if (localStorage.getItem("pref-theme") === "dark") {
         document.body.classList.add('dark');
@@ -98,32 +99,61 @@
     </nav>
 </header>
 
-    <main class="main"> 
-<header class="page-header">
-  <h1>review buku</h1>
-</header>
+    <main class="main">
 
+<article class="post-single">
+  <header class="post-header">
+    <h1 class="post-title">
+      Apa Itu Hashing? beda dengan Enkripsi
+    </h1>
+    <div class="post-meta">June 10, 2021
 
+    </div>
+  </header> 
 
-<article class="post-entry tag-entry"> 
-<figure class="entry-cover"><img src="https://wendyadi.github.io/img/it-doesnt-have-to-be-crazy.png" alt="">
-</figure>
+  <div class="post-content">
+<p>Hashing adalah suatu proses untuk merubah sebuah Key data atau string menjadi bentuk lain yang biasanya lebih ringkas/pendek. Bisa dikatakan juga Hashing adalah proses mengubah Key menjadi Hash menggunakan HashFunction.</p>
+<p>Perlu diingat beda dengan encrypt/decrypt, kita tidak bisa mendapatkan kembali Key dengan hanya mengetahui Hash nya saja.</p>
+<p><img src="/img/encrypt-decrypt.png#center" alt="Enkripsi-Dekripsi"></p>
+<p>Jika kita meng-encrypt sebuah data maka kita bisa mengembalikan data yang sudah kita encrypt tadi asal kita tau cara decrypt (dekripsi) nya. Tapi kalau hashing itu satu arah, kalau sudah di hash; tidak bisa dikembalikan ke Key nya lagi.</p>
+<p><img src="/img/hashing.png#center" alt="Hashing"></p>
+<blockquote>
+<p>🚨 Meski dibilang satu arah, tapi tetap saja ada &ldquo;akal-akalan&quot;nya untuk mengetahui key nya. Lebih lanjut soal ini di artikel lain.</p>
+</blockquote>
+<hr>
+<h1 id="-contoh">▪️ Contoh<a hidden class="anchor" aria-hidden="true" href="#-contoh">#</a></h1>
+<h2 id="-contoh-function-encryptiondecryption">▪️▪️ Contoh function Encryption/Decryption<a hidden class="anchor" aria-hidden="true" href="#-contoh-function-encryptiondecryption">#</a></h2>
+<p>Salah satu contoh function decryption dan encryption adalah base64. Kita bisa coba melakukan base64 di <a href="https://www.base64encode.org/">https://www.base64encode.org/</a>. Jika kita input <code>sayasukamakan</code> dan click Encode maka hasilnya adalah <code>c2F5YXN1a2FtYWthbg==</code>.</p>
+<p><img src="/img/sayasukamakan-encode.png#center" alt="Encode"></p>
+<p>Kemudian jika kita klik Decode diatas dan kita input <code>c2F5YXN1a2FtYWthbg==</code> maka hasilnya adalah <code>sayasukamakan</code>.
+<img src="/img/sayasukamakan-decode.png#center" alt="Decode"></p>
+<p>Jika kita berikan data <code>c2F5YXN1a2FtYWthbg==</code> ini kepada orang lain tanpa kita beri tahu dia function apa yang kita pakai untuk meng-encrypt key-nya. Maka orang itu tidak akan bisa menebak kata asalnya (sayasukamakan)&hellip; Kecuali dia punya sangat banyak waktu atau komputer yang canggih buat coba semua kemungkinan fungsi enkripsi 😏</p>
+<blockquote>
+<p>🚨 Tidak perlu bingung dengan encrypt/decrypt vs encode/decode. Encryption itu sebetulnya definisinya hanya proses melakukan encoding dari suatu data saja. Begitu juga sebaliknya dengan decrypt.</p>
+</blockquote>
+<h2 id="-contoh-function-hashing">▪️▪️ Contoh function Hashing<a hidden class="anchor" aria-hidden="true" href="#-contoh-function-hashing">#</a></h2>
+<p>Contoh function hashing antara lain</p>
+<ul>
+<li>MD5</li>
+<li>Secure Hash Algortihm (SHA) dengan berbagai versi (SHA-1, SHA-256, SHA-512, dst)</li>
+</ul>
+<p>Contohnya saat kita melakukan MD5 dengan Key <code>sayasukamakan</code> hasil Hash nya adalah <code>a577a16e18df6996304e71e9f0f7deb2</code>. Kita bisa coba di <a href="https://www.md5.cz/">https://www.md5.cz/</a>.</p>
+<blockquote>
+<p>🚨 Meski kita makai website md5.cz disini, tapi tidak dianjurkan untuk melakukan hashing melalui website karena website tersebut bisa saja mengumpulkan data hashing yang dilakukan user dibalik layar.</p>
+</blockquote>
+<p><img src="/img/sayasukamakan-md5.png#center" alt="MD5"></p>
+<p>Meski guna dari algoritma hash (md5) ini adalah untuk mengacak data, namun jika Key nya masih sama maka hasil Hash-nya juga akan sama kapan pun kita melakukan hashing. Umumnya algoritma hash yang baik harus bisa memberikan hasil yang unik untuk jumlah varian Key yang banyak. Jika sebuah algoritma hash memberikan hasih Hash yang sama untuk Key yang berbeda, kejadian ini disebut <a href="https://en.wikipedia.org/wiki/Hash_collision#:~:text=In%20computer%20science%2C%20a%20hash,a%20fixed%20length%20of%20bits.">Hash Collision atau Tabrakan Hash 😄</a></p>
+<hr>
+<p>Sekian tentang Hashing dan Encrypt/Decrypt, semoga membantu 🙏</p>
 
-  <header class="entry-header">
-    <h2>
-      👀 It Doesnt Have to Be Crazy at Work
-    </h2>
-  </header>
-  <section class="entry-content">
-    <p>⭐⭐⭐⭐⭐
-article update: 19 July 2021
-Buku ini ditulis oleh Jason Fried dan David Heinemeier Hansson yang merupakan pendiri dari Basecamp, salah satu aplikasi project management yang sukses menggaet banyak peminat. Dalam buku ini, penulis membagikan pemikiran-pemikiran mereka tentang bagaimana Calm atau ketenangan menjadi bagian penting dalam menyelesaikan sebuah pekerjaan, dan bagaimana ketenangan itu menjadi value (nilai) yang dijunjung tinggi dalam perusahaan mereka. Bagaimana perusahaan mereka menjaga agar pekerjaan mereka masuk akal, sesuai judulnya It doesn’t have to be crazy at work....</p>
-  </section>
-  <footer class="entry-footer">March 15, 2021
-</footer>
-  <a class="entry-link" aria-label="post link to 👀 It Doesnt Have to Be Crazy at Work" href="https://wendyadi.github.io/posts/it-doesnt-have-to-be-crazy-at-work/"></a>
+</div>
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://wendyadi.github.io/tags/hashing">hashing</a></li>
+      <li><a href="https://wendyadi.github.io/tags/encryption">encryption</a></li>
+    </ul>
+  </footer>
 </article>
-
     </main><footer class="footer">
     <span>&copy; 2023 <a href="https://wendyadi.github.io/">wendyadi.github.io</a></span>
     <span>&middot;</span>
@@ -138,6 +168,7 @@ Buku ini ditulis oleh Jason Fried dan David Heinemeier Hansson yang merupakan pe
 
 
 
+<script defer src="https://wendyadi.github.io/assets/js/highlight.min.js" onload="hljs.initHighlightingOnLoad();"></script>
 <script>
     window.onload = function () {
         if (localStorage.getItem("menu-scroll-position")) {

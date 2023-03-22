@@ -6,7 +6,18 @@
     <description>Recent content on wendyadi.github.io</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 15 Mar 2021 23:27:24 +0700</lastBuildDate><atom:link href="https://wendyadi.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 10 Jun 2021 20:14:17 +0700</lastBuildDate><atom:link href="https://wendyadi.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Apa Itu Hashing? beda dengan Enkripsi</title>
+      <link>https://wendyadi.github.io/posts/apa-itu-hashing/</link>
+      <pubDate>Thu, 10 Jun 2021 20:14:17 +0700</pubDate>
+      
+      <guid>https://wendyadi.github.io/posts/apa-itu-hashing/</guid>
+      <description>Hashing adalah suatu proses untuk merubah sebuah Key data atau string menjadi bentuk lain yang biasanya lebih ringkas/pendek. Bisa dikatakan juga Hashing adalah proses mengubah Key menjadi Hash menggunakan HashFunction.
+Perlu diingat beda dengan encrypt/decrypt, kita tidak bisa mendapatkan kembali Key dengan hanya mengetahui Hash nya saja.
+Jika kita meng-encrypt sebuah data maka kita bisa mengembalikan data yang sudah kita encrypt tadi asal kita tau cara decrypt (dekripsi) nya. Tapi kalau hashing itu satu arah, kalau sudah di hash; tidak bisa dikembalikan ke Key nya lagi.</description>
+    </item>
+    
     <item>
       <title>👀 It Doesnt Have to Be Crazy at Work</title>
       <link>https://wendyadi.github.io/posts/it-doesnt-have-to-be-crazy-at-work/</link>
