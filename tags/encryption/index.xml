@@ -13,9 +13,9 @@
       <pubDate>Thu, 10 Jun 2021 20:14:17 +0700</pubDate>
       
       <guid>https://wendyadi.github.io/posts/apa-itu-hashing/</guid>
-      <description>Hashing adalah suatu proses untuk merubah sebuah Key data atau string menjadi bentuk lain yang biasanya lebih ringkas/pendek. Bisa dikatakan juga Hashing adalah proses mengubah Key menjadi Hash menggunakan HashFunction.
-Perlu diingat beda dengan encrypt/decrypt, kita tidak bisa mendapatkan kembali Key dengan hanya mengetahui Hash nya saja.
-Jika kita meng-encrypt sebuah data maka kita bisa mengembalikan data yang sudah kita encrypt tadi asal kita tau cara decrypt (dekripsi) nya. Tapi kalau hashing itu satu arah, kalau sudah di hash; tidak bisa dikembalikan ke Key nya lagi.</description>
+      <description>Hashing adalah suatu proses untuk merubah sebuah Data (umumnya dari string) menjadi bentuk lain yang biasanya lebih ringkas/pendek. Bisa dikatakan juga Hashing adalah proses mengubah Data menjadi Hash menggunakan HashFunction.
+Perlu diingat beda dengan encrypt/decrypt, kita tidak bisa mendapatkan kembali Data dengan hanya mengetahui Hash nya saja.
+ Enkripsi-deskripsi   Jika kita meng-encrypt sebuah Data maka kita bisa mengembalikan Data yang sudah kita encrypt tadi asal kita tau cara decrypt (dekripsi) nya dan juga Key yang harus kita gunakan.</description>
     </item>
     
   </channel>
