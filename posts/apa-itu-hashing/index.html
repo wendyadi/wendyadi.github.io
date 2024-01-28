@@ -4,18 +4,15 @@
 <head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name=" robots" content="noindex, nofollow">
+<meta name="robots" content="index, follow">
 <title>Apa Itu Hashing? beda dengan Enkripsi | wendyadi.github.io</title>
-
-<meta name="keywords" content="hashing, encryption" />
+<meta name="keywords" content="hashing, encryption">
 <meta name="description" content="Hashing adalah suatu proses untuk merubah sebuah Data (umumnya dari string) menjadi bentuk lain yang biasanya lebih ringkas/pendek. Bisa dikatakan juga Hashing adalah proses mengubah Data menjadi Hash menggunakan HashFunction.
 Perlu diingat beda dengan encrypt/decrypt, kita tidak bisa mendapatkan kembali Data dengan hanya mengetahui Hash nya saja.
- Enkripsi-deskripsi   Jika kita meng-encrypt sebuah Data maka kita bisa mengembalikan Data yang sudah kita encrypt tadi asal kita tau cara decrypt (dekripsi) nya dan juga Key yang harus kita gunakan.">
+Enkripsi-deskripsi Jika kita meng-encrypt sebuah Data maka kita bisa mengembalikan Data yang sudah kita encrypt tadi asal kita tau cara decrypt (dekripsi) nya dan juga Key yang harus kita gunakan.">
 <meta name="author" content="">
-<link rel="canonical" href="https://wendyadi.github.io/posts/apa-itu-hashing/" />
-
-<link href="https://wendyadi.github.io/assets/css/stylesheet.min.css" rel="preload stylesheet" as="style">
-
+<link rel="canonical" href="https://wendyadi.github.io/posts/apa-itu-hashing/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.b609c58d5c11bb90b1a54e04005d74ad1ddf22165eb79f5533967e57df9c3b50.css" integrity="sha256-tgnFjVwRu5CxpU4EAF10rR3fIhZet59VM5Z&#43;V9&#43;cO1A=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://wendyadi.github.io/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://wendyadi.github.io/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="https://wendyadi.github.io/favicon-32x32.png">
@@ -23,14 +20,110 @@ Perlu diingat beda dengan encrypt/decrypt, kita tidak bisa mendapatkan kembali D
 <link rel="mask-icon" href="https://wendyadi.github.io/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<meta name="generator" content="Hugo 0.92.2" />
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="Apa Itu Hashing? beda dengan Enkripsi" />
+<meta property="og:description" content="Hashing adalah suatu proses untuk merubah sebuah Data (umumnya dari string) menjadi bentuk lain yang biasanya lebih ringkas/pendek. Bisa dikatakan juga Hashing adalah proses mengubah Data menjadi Hash menggunakan HashFunction.
+Perlu diingat beda dengan encrypt/decrypt, kita tidak bisa mendapatkan kembali Data dengan hanya mengetahui Hash nya saja.
+Enkripsi-deskripsi Jika kita meng-encrypt sebuah Data maka kita bisa mengembalikan Data yang sudah kita encrypt tadi asal kita tau cara decrypt (dekripsi) nya dan juga Key yang harus kita gunakan." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://wendyadi.github.io/posts/apa-itu-hashing/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-06-10T20:14:17+07:00" />
+<meta property="article:modified_time" content="2021-06-10T20:14:17+07:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Apa Itu Hashing? beda dengan Enkripsi"/>
+<meta name="twitter:description" content="Hashing adalah suatu proses untuk merubah sebuah Data (umumnya dari string) menjadi bentuk lain yang biasanya lebih ringkas/pendek. Bisa dikatakan juga Hashing adalah proses mengubah Data menjadi Hash menggunakan HashFunction.
+Perlu diingat beda dengan encrypt/decrypt, kita tidak bisa mendapatkan kembali Data dengan hanya mengetahui Hash nya saja.
+Enkripsi-deskripsi Jika kita meng-encrypt sebuah Data maka kita bisa mengembalikan Data yang sudah kita encrypt tadi asal kita tau cara decrypt (dekripsi) nya dan juga Key yang harus kita gunakan."/>
 
 
-
-
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://wendyadi.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Apa Itu Hashing? beda dengan Enkripsi",
+      "item": "https://wendyadi.github.io/posts/apa-itu-hashing/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Apa Itu Hashing? beda dengan Enkripsi",
+  "name": "Apa Itu Hashing? beda dengan Enkripsi",
+  "description": "Hashing adalah suatu proses untuk merubah sebuah Data (umumnya dari string) menjadi bentuk lain yang biasanya lebih ringkas/pendek. Bisa dikatakan juga Hashing adalah proses mengubah Data menjadi Hash menggunakan HashFunction.\nPerlu diingat beda dengan encrypt/decrypt, kita tidak bisa mendapatkan kembali Data dengan hanya mengetahui Hash nya saja.\nEnkripsi-deskripsi Jika kita meng-encrypt sebuah Data maka kita bisa mengembalikan Data yang sudah kita encrypt tadi asal kita tau cara decrypt (dekripsi) nya dan juga Key yang harus kita gunakan.",
+  "keywords": [
+    "hashing", "encryption"
+  ],
+  "articleBody": "Hashing adalah suatu proses untuk merubah sebuah Data (umumnya dari string) menjadi bentuk lain yang biasanya lebih ringkas/pendek. Bisa dikatakan juga Hashing adalah proses mengubah Data menjadi Hash menggunakan HashFunction.\nPerlu diingat beda dengan encrypt/decrypt, kita tidak bisa mendapatkan kembali Data dengan hanya mengetahui Hash nya saja.\nEnkripsi-deskripsi Jika kita meng-encrypt sebuah Data maka kita bisa mengembalikan Data yang sudah kita encrypt tadi asal kita tau cara decrypt (dekripsi) nya dan juga Key yang harus kita gunakan. Tapi kalau hashing itu satu arah, kalau sudah di hash; tidak bisa dikembalikan ke Data asal nya lagi.\nHash tidak bisa dikembalikan ke data semula 🚨 Meski dibilang satu arah, tapi tetap saja ada “akal-akalan\"nya untuk mengetahui key-nya dengan cara brute force.\nContoh Contoh function Encryption/Decryption package main import ( \"crypto/aes\" \"crypto/cipher\" \"crypto/rand\" \"encoding/hex\" \"fmt\" \"io\" ) func main() { bytes := []byte(\"1234567890abcdefghijklmnopABCDEF\") key := hex.EncodeToString(bytes) //encode key in bytes to string and keep as secret, put in a vault fmt.Printf(\"key to encrypt/decrypt : %s\\n\", key) encrypted := encrypt(\"sayasukamakan\", key) fmt.Printf(\"encrypted : %s\\n\", encrypted) decrypted := decrypt(encrypted, key) fmt.Printf(\"decrypted : %s\\n\", decrypted) } func encrypt(stringToEncrypt string, keyString string) (encryptedString string) { //Since the key is in string, we need to convert decode it to bytes key, _ := hex.DecodeString(keyString) plaintext := []byte(stringToEncrypt) //Create a new Cipher Block from the key block, err := aes.NewCipher(key) if err != nil { panic(err.Error()) } //Create a new GCM - https://en.wikipedia.org/wiki/Galois/Counter_Mode //https://golang.org/pkg/crypto/cipher/#NewGCM aesGCM, err := cipher.NewGCM(block) if err != nil { panic(err.Error()) } //Create a nonce. Nonce should be from GCM nonce := make([]byte, aesGCM.NonceSize()) if _, err = io.ReadFull(rand.Reader, nonce); err != nil { panic(err.Error()) } //Encrypt the data using aesGCM.Seal //Since we don't want to save the nonce somewhere else in this case, we add it as a prefix to the encrypted data. The first nonce argument in Seal is the prefix. ciphertext := aesGCM.Seal(nonce, nonce, plaintext, nil) return fmt.Sprintf(\"%x\", ciphertext) } func decrypt(encryptedString string, keyString string) (decryptedString string) { key, _ := hex.DecodeString(keyString) enc, _ := hex.DecodeString(encryptedString) //Create a new Cipher Block from the key block, err := aes.NewCipher(key) if err != nil { panic(err.Error()) } //Create a new GCM aesGCM, err := cipher.NewGCM(block) if err != nil { panic(err.Error()) } //Get the nonce size nonceSize := aesGCM.NonceSize() //Extract the nonce from the encrypted data nonce, ciphertext := enc[:nonceSize], enc[nonceSize:] //Decrypt the data plaintext, err := aesGCM.Open(nil, nonce, ciphertext, nil) if err != nil { panic(err.Error()) } return fmt.Sprintf(\"%s\", plaintext) } Source code: sumber\nSalah satu contoh function decryption dan encryption adalah AES. Kita bisa coba melakukan AES dengan menggunakan source code diatas yang kita run di play.golang.org. Kode diatas men-generate 32byte random key, kemudian melakukan enkripsi string sayasukamakan menggunakan AES dengan key 1234567890abcdefghijklmnopABCDEF. Hasil enkripsinya adalah string dibawah ini:\nb790fe783e702e598a44abeb76528611ed01a6719db1317ca683c92a0ab117403f8d84dcee200ff7de\nApabila kita berikan data yang ter-enkripsi diatas ini kepada orang lain. Maka orang itu tidak akan bisa menebak kata asalnya (sayasukamakan) jika tidak mengetahui algoritma enkripsi dan key yang digunakan. Kecuali dia punya sangat banyak waktu atau komputer yang canggih buat coba semua kemungkinan fungsi enkripsi dan kombinasi key 😏\nContoh function Hashing Contoh function hashing antara lain\nMD5 Secure Hash Algortihm (SHA) dengan berbagai versi (SHA-1, SHA-256, SHA-512, dst) Contohnya saat kita melakukan MD5 dengan Key sayasukamakan hasil Hash nya adalah a577a16e18df6996304e71e9f0f7deb2. Kita bisa coba di https://www.md5.cz/.\n🚨 Meski kita makai website md5.cz disini, tapi tidak dianjurkan untuk melakukan hashing melalui website karena website tersebut bisa saja mengumpulkan data hashing yang dilakukan user dibalik layar.\nMD5 Meski guna dari algoritma hash (md5) ini adalah untuk mengacak data, namun jika Key nya masih sama maka hasil Hash-nya juga akan sama kapan pun kita melakukan hashing. Umumnya algoritma hash yang baik harus bisa memberikan hasil yang unik untuk jumlah varian Key yang banyak. Jika sebuah algoritma hash memberikan hasih Hash yang sama untuk Key yang berbeda, kejadian ini disebut Hash Collision atau Tabrakan Hash 😄\nSekian tentang Hashing dan Encrypt/Decrypt, semoga membantu 🙏\n",
+  "wordCount" : "649",
+  "inLanguage": "en",
+  "datePublished": "2021-06-10T20:14:17+07:00",
+  "dateModified": "2021-06-10T20:14:17+07:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://wendyadi.github.io/posts/apa-itu-hashing/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "wendyadi.github.io",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://wendyadi.github.io/favicon.ico"
+    }
+  }
+}
+</script>
 </head>
 
-<body class="">
+<body class="" id="top">
 <script>
     if (localStorage.getItem("pref-theme") === "dark") {
         document.body.classList.add('dark');
@@ -41,87 +134,78 @@ Perlu diingat beda dengan encrypt/decrypt, kita tidak bisa mendapatkan kembali D
     }
 
 </script>
-<noscript>
-    <style type="text/css">
-        .theme-toggle,
-        .top-link {
-            display: none;
-        }
 
-    </style>
-</noscript>
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="https://wendyadi.github.io/" accesskey="h">wendyadi.github.io</a>
-            <span class="logo-switches">
-                <span class="theme-toggle">
-                    <a id="theme-toggle" accesskey="t">
-                        <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round">
-                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-                        </svg>
-                        <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round">
-                            <circle cx="12" cy="12" r="5"></circle>
-                            <line x1="12" y1="1" x2="12" y2="3"></line>
-                            <line x1="12" y1="21" x2="12" y2="23"></line>
-                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                            <line x1="1" y1="12" x2="3" y2="12"></line>
-                            <line x1="21" y1="12" x2="23" y2="12"></line>
-                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-                        </svg>
-                    </a>
-                </span>
-                
-            </span>
+            <a href="https://wendyadi.github.io/" accesskey="h" title="wendyadi.github.io (Alt + H)">wendyadi.github.io</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
         </div>
-        <ul class="menu" id="menu" onscroll="menu_on_scroll()"><div class="social-icons"></div>
-
+        <ul id="menu">
             <li>
-                <a href="https://wendyadi.github.io/archives/" target="_blank">
-                    <span>
-                        Archives
-                    </span>
+                <a href="https://wendyadi.github.io/archives/" title="Archives">
+                    <span>Archives</span>
                 </a>
             </li>
             <li>
-                <a href="https://www.linkedin.com/in/wendyadi/" target="_blank">
-                    <span>
-                        Linkedin
-                    </span>
+                <a href="https://www.linkedin.com/in/wendyadi/" title="Linkedin">
+                    <span>Linkedin</span>&nbsp;
+                    <svg fill="none" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round"
+                        stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12">
+                        <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"></path>
+                        <path d="M15 3h6v6"></path>
+                        <path d="M10 14L21 3"></path>
+                    </svg>
                 </a>
-            </li></ul>
+            </li>
+        </ul>
     </nav>
 </header>
-
-    <main class="main">
+<main class="main">
 
 <article class="post-single">
   <header class="post-header">
-    <h1 class="post-title">
+    
+    <h1 class="post-title entry-hint-parent">
       Apa Itu Hashing? beda dengan Enkripsi
     </h1>
-    <div class="post-meta">June 10, 2021
+    <div class="post-meta"><span title='2021-06-10 20:14:17 +0700 WIB'>June 10, 2021</span>
 
-    </div>
+</div>
   </header> 
-
-  <div class="post-content">
-<p>Hashing adalah suatu proses untuk merubah sebuah Data (umumnya dari string) menjadi bentuk lain yang biasanya lebih ringkas/pendek. Bisa dikatakan juga Hashing adalah proses mengubah Data menjadi Hash menggunakan HashFunction.</p>
+  <div class="post-content"><p>Hashing adalah suatu proses untuk merubah sebuah Data (umumnya dari string) menjadi bentuk lain yang biasanya lebih ringkas/pendek. Bisa dikatakan juga Hashing adalah proses mengubah Data menjadi Hash menggunakan HashFunction.</p>
 <p>Perlu diingat beda dengan encrypt/decrypt, kita tidak bisa mendapatkan kembali Data dengan hanya mengetahui Hash nya saja.</p>
-<figure><img src="/img/encrypt-decrypt.png#center"/><figcaption>
-            <h4>Enkripsi-deskripsi</h4>
+<figure>
+    <img loading="lazy" src="/img/encrypt-decrypt.png#center"/> <figcaption>
+            Enkripsi-deskripsi
         </figcaption>
 </figure>
 
 <p>Jika kita meng-encrypt sebuah Data maka kita bisa mengembalikan Data yang sudah kita encrypt tadi asal kita tau cara decrypt (dekripsi) nya dan juga Key yang harus kita gunakan. Tapi kalau hashing itu satu arah, kalau sudah di hash; tidak bisa dikembalikan ke Data asal nya lagi.</p>
-<figure><img src="/img/hashing.png#center"/><figcaption>
-            <h4>Hash tidak bisa dikembalikan ke data semula</h4>
+<figure>
+    <img loading="lazy" src="/img/hashing.png#center"/> <figcaption>
+            Hash tidak bisa dikembalikan ke data semula
         </figcaption>
 </figure>
 
@@ -134,26 +218,26 @@ Perlu diingat beda dengan encrypt/decrypt, kita tidak bisa mendapatkan kembali D
 <pre tabindex="0"><code>package main
 
 import (
-	&quot;crypto/aes&quot;
-	&quot;crypto/cipher&quot;
-	&quot;crypto/rand&quot;
-	&quot;encoding/hex&quot;
-	&quot;fmt&quot;
-	&quot;io&quot;
+	&#34;crypto/aes&#34;
+	&#34;crypto/cipher&#34;
+	&#34;crypto/rand&#34;
+	&#34;encoding/hex&#34;
+	&#34;fmt&#34;
+	&#34;io&#34;
 )
 
 func main() {
 
-	bytes := []byte(&quot;1234567890abcdefghijklmnopABCDEF&quot;)
+	bytes := []byte(&#34;1234567890abcdefghijklmnopABCDEF&#34;)
 
 	key := hex.EncodeToString(bytes) //encode key in bytes to string and keep as secret, put in a vault
-	fmt.Printf(&quot;key to encrypt/decrypt : %s\n&quot;, key)
+	fmt.Printf(&#34;key to encrypt/decrypt : %s\n&#34;, key)
 
-	encrypted := encrypt(&quot;sayasukamakan&quot;, key)
-	fmt.Printf(&quot;encrypted : %s\n&quot;, encrypted)
+	encrypted := encrypt(&#34;sayasukamakan&#34;, key)
+	fmt.Printf(&#34;encrypted : %s\n&#34;, encrypted)
 
 	decrypted := decrypt(encrypted, key)
-	fmt.Printf(&quot;decrypted : %s\n&quot;, decrypted)
+	fmt.Printf(&#34;decrypted : %s\n&#34;, decrypted)
 }
 
 func encrypt(stringToEncrypt string, keyString string) (encryptedString string) {
@@ -182,9 +266,9 @@ func encrypt(stringToEncrypt string, keyString string) (encryptedString string) 
 	}
 
 	//Encrypt the data using aesGCM.Seal
-	//Since we don't want to save the nonce somewhere else in this case, we add it as a prefix to the encrypted data. The first nonce argument in Seal is the prefix.
+	//Since we don&#39;t want to save the nonce somewhere else in this case, we add it as a prefix to the encrypted data. The first nonce argument in Seal is the prefix.
 	ciphertext := aesGCM.Seal(nonce, nonce, plaintext, nil)
-	return fmt.Sprintf(&quot;%x&quot;, ciphertext)
+	return fmt.Sprintf(&#34;%x&#34;, ciphertext)
 }
 
 func decrypt(encryptedString string, keyString string) (decryptedString string) {
@@ -216,10 +300,11 @@ func decrypt(encryptedString string, keyString string) (decryptedString string) 
 		panic(err.Error())
 	}
 
-	return fmt.Sprintf(&quot;%s&quot;, plaintext)
+	return fmt.Sprintf(&#34;%s&#34;, plaintext)
 }
 </code></pre><p>Source code: <a href="https://www.melvinvivas.com/how-to-encrypt-and-decrypt-data-using-aes">sumber</a></p>
-<figure><img src="/img/encrypt-result-go.png#center"/>
+<figure>
+    <img loading="lazy" src="/img/encrypt-result-go.png#center"/> 
 </figure>
 
 <p>Salah satu contoh function decryption dan encryption adalah AES. Kita bisa coba melakukan AES dengan menggunakan source code diatas yang kita run di play.golang.org. Kode diatas men-generate 32byte random key, kemudian melakukan enkripsi string <code>sayasukamakan</code> menggunakan AES dengan key <code>1234567890abcdefghijklmnopABCDEF</code>. Hasil enkripsinya adalah string dibawah ini:</p>
@@ -235,8 +320,9 @@ func decrypt(encryptedString string, keyString string) (decryptedString string) 
 <blockquote>
 <p>🚨 Meski kita makai website md5.cz disini, tapi tidak dianjurkan untuk melakukan hashing melalui website karena website tersebut bisa saja mengumpulkan data hashing yang dilakukan user dibalik layar.</p>
 </blockquote>
-<figure><img src="/img/sayasukamakan-md5.png#center"/><figcaption>
-            <h4>MD5</h4>
+<figure>
+    <img loading="lazy" src="/img/sayasukamakan-md5.png#center"/> <figcaption>
+            MD5
         </figcaption>
 </figure>
 
@@ -244,35 +330,62 @@ func decrypt(encryptedString string, keyString string) (decryptedString string) 
 <hr>
 <p>Sekian tentang Hashing dan Encrypt/Decrypt, semoga membantu 🙏</p>
 
-</div>
+
+  </div>
+
   <footer class="post-footer">
     <ul class="post-tags">
-      <li><a href="https://wendyadi.github.io/tags/hashing">hashing</a></li>
-      <li><a href="https://wendyadi.github.io/tags/encryption">encryption</a></li>
+      <li><a href="https://wendyadi.github.io/tags/hashing/">hashing</a></li>
+      <li><a href="https://wendyadi.github.io/tags/encryption/">encryption</a></li>
     </ul>
   </footer>
 </article>
-    </main><footer class="footer">
-    <span>&copy; 2023 <a href="https://wendyadi.github.io/">wendyadi.github.io</a></span>
-    <span>&middot;</span>
-    <span>Powered by <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a></span>
-    <span>&middot;</span>
-    <span>Theme <a href="https://git.io/hugopapermod" rel="noopener" target="_blank">PaperMod</a></span>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2024 <a href="https://wendyadi.github.io/">wendyadi.github.io</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
 </footer>
-<button class="top-link" id="top-link" type="button" aria-label="go to top" title="Go to Top" accesskey="g">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6">
-        <path d="M12 6H0l6-6z" /></svg>
-</button>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
 
-
-
-<script defer src="https://wendyadi.github.io/assets/js/highlight.min.js" onload="hljs.initHighlightingOnLoad();"></script>
 <script>
-    window.onload = function () {
-        if (localStorage.getItem("menu-scroll-position")) {
-            document.getElementById('menu').scrollLeft = localStorage.getItem("menu-scroll-position");
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
         }
     }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
     var mybutton = document.getElementById("top-link");
     window.onscroll = function () {
         if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
@@ -283,15 +396,6 @@ func decrypt(encryptedString string, keyString string) (decryptedString string) 
             mybutton.style.opacity = "0";
         }
     };
-    mybutton.onclick = function () {
-        document.body.scrollTop = 0;
-        document.documentElement.scrollTop = 0;
-        window.location.hash = ''
-    }
-
-    function menu_on_scroll() {
-        localStorage.setItem("menu-scroll-position", document.getElementById('menu').scrollLeft);
-    }
 
 </script>
 <script>
@@ -306,7 +410,6 @@ func decrypt(encryptedString string, keyString string) (decryptedString string) 
     })
 
 </script>
-
 </body>
 
 </html>

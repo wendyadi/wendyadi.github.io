@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>short-circuiting on wendyadi.github.io</title>
+    <link>https://wendyadi.github.io/tags/short-circuiting/</link>
+    <description>Recent content in short-circuiting on wendyadi.github.io</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 04 Feb 2023 01:53:32 +0700</lastBuildDate>
+    <atom:link href="https://wendyadi.github.io/tags/short-circuiting/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Short Circuiting</title>
+      <link>https://wendyadi.github.io/posts/short-circuiting/</link>
+      <pubDate>Sat, 04 Feb 2023 01:53:32 +0700</pubDate>
+      <guid>https://wendyadi.github.io/posts/short-circuiting/</guid>
+      <description>Beberapa minggu belakangan ini saat mencari-cari video tentang High Frequency Trading (HFT), saya menemukan video dibawah ini: 5 ways quant developers speed up their code (without external hardware), atau 5 cara quant developer mempercepat kode mereka (tanpa hardware external).
+Dalam video itu dibahas mengenai teknik Short Circuiting yang saya baru tahu setelah menonton video ini. Dan karena menarik saya jadi ingin menuliskannya dalam artikel agar tidak lupa.
+Short circuiting adalah teknik mengoptimasi kode kita untuk bisa keluar dari logika pengecekan secepat mungkin karena program kita tidak perlu mengecek parameter selanjutnya.</description>
+    </item>
+  </channel>
+</rss>

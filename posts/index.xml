@@ -6,28 +6,34 @@
     <description>Recent content in Posts on wendyadi.github.io</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 10 Jun 2021 20:14:17 +0700</lastBuildDate><atom:link href="https://wendyadi.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 04 Feb 2023 01:53:32 +0700</lastBuildDate>
+    <atom:link href="https://wendyadi.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Short Circuiting</title>
+      <link>https://wendyadi.github.io/posts/short-circuiting/</link>
+      <pubDate>Sat, 04 Feb 2023 01:53:32 +0700</pubDate>
+      <guid>https://wendyadi.github.io/posts/short-circuiting/</guid>
+      <description>Beberapa minggu belakangan ini saat mencari-cari video tentang High Frequency Trading (HFT), saya menemukan video dibawah ini: 5 ways quant developers speed up their code (without external hardware), atau 5 cara quant developer mempercepat kode mereka (tanpa hardware external).
+Dalam video itu dibahas mengenai teknik Short Circuiting yang saya baru tahu setelah menonton video ini. Dan karena menarik saya jadi ingin menuliskannya dalam artikel agar tidak lupa.
+Short circuiting adalah teknik mengoptimasi kode kita untuk bisa keluar dari logika pengecekan secepat mungkin karena program kita tidak perlu mengecek parameter selanjutnya.</description>
+    </item>
     <item>
       <title>Apa Itu Hashing? beda dengan Enkripsi</title>
       <link>https://wendyadi.github.io/posts/apa-itu-hashing/</link>
       <pubDate>Thu, 10 Jun 2021 20:14:17 +0700</pubDate>
-      
       <guid>https://wendyadi.github.io/posts/apa-itu-hashing/</guid>
       <description>Hashing adalah suatu proses untuk merubah sebuah Data (umumnya dari string) menjadi bentuk lain yang biasanya lebih ringkas/pendek. Bisa dikatakan juga Hashing adalah proses mengubah Data menjadi Hash menggunakan HashFunction.
 Perlu diingat beda dengan encrypt/decrypt, kita tidak bisa mendapatkan kembali Data dengan hanya mengetahui Hash nya saja.
- Enkripsi-deskripsi   Jika kita meng-encrypt sebuah Data maka kita bisa mengembalikan Data yang sudah kita encrypt tadi asal kita tau cara decrypt (dekripsi) nya dan juga Key yang harus kita gunakan.</description>
+Enkripsi-deskripsi Jika kita meng-encrypt sebuah Data maka kita bisa mengembalikan Data yang sudah kita encrypt tadi asal kita tau cara decrypt (dekripsi) nya dan juga Key yang harus kita gunakan.</description>
     </item>
-    
     <item>
       <title>👀 It Doesnt Have to Be Crazy at Work</title>
       <link>https://wendyadi.github.io/posts/it-doesnt-have-to-be-crazy-at-work/</link>
       <pubDate>Mon, 15 Mar 2021 23:27:24 +0700</pubDate>
-      
       <guid>https://wendyadi.github.io/posts/it-doesnt-have-to-be-crazy-at-work/</guid>
       <description>My rating: ⭐⭐⭐⭐⭐
- article update: 19 July 2021
- Buku ini ditulis oleh Jason Fried dan David Heinemeier Hansson yang merupakan pendiri dari Basecamp, salah satu aplikasi project management yang sukses menggaet banyak peminat. Dalam buku ini, penulis membagikan pemikiran-pemikiran mereka tentang bagaimana Calm atau ketenangan menjadi bagian penting dalam menyelesaikan sebuah pekerjaan, dan bagaimana ketenangan itu menjadi value (nilai) yang dijunjung tinggi dalam perusahaan mereka. Bagaimana perusahaan mereka menjaga agar pekerjaan mereka masuk akal, sesuai judulnya It doesn&amp;rsquo;t have to be crazy at work.</description>
+article update: 19 July 2021
+Buku ini ditulis oleh Jason Fried dan David Heinemeier Hansson yang merupakan pendiri dari Basecamp, salah satu aplikasi project management yang sukses menggaet banyak peminat. Dalam buku ini, penulis membagikan pemikiran-pemikiran mereka tentang bagaimana Calm atau ketenangan menjadi bagian penting dalam menyelesaikan sebuah pekerjaan, dan bagaimana ketenangan itu menjadi value (nilai) yang dijunjung tinggi dalam perusahaan mereka. Bagaimana perusahaan mereka menjaga agar pekerjaan mereka masuk akal, sesuai judulnya It doesn&amp;rsquo;t have to be crazy at work.</description>
     </item>
-    
   </channel>
 </rss>

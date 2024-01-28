@@ -4,18 +4,15 @@
 <head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name=" robots" content="noindex, nofollow">
+<meta name="robots" content="index, follow">
 <title>Short Circuiting | wendyadi.github.io</title>
-
-<meta name="keywords" content="" />
+<meta name="keywords" content="id, golang, optimization, short-circuiting">
 <meta name="description" content="Beberapa minggu belakangan ini saat mencari-cari video tentang High Frequency Trading (HFT), saya menemukan video dibawah ini: 5 ways quant developers speed up their code (without external hardware), atau 5 cara quant developer mempercepat kode mereka (tanpa hardware external).
 Dalam video itu dibahas mengenai teknik Short Circuiting yang saya baru tahu setelah menonton video ini. Dan karena menarik saya jadi ingin menuliskannya dalam artikel agar tidak lupa.
 Short circuiting adalah teknik mengoptimasi kode kita untuk bisa keluar dari logika pengecekan secepat mungkin karena program kita tidak perlu mengecek parameter selanjutnya.">
 <meta name="author" content="">
-<link rel="canonical" href="https://wendyadi.github.io/posts/short-circuiting/" />
-
-<link href="https://wendyadi.github.io/assets/css/stylesheet.min.css" rel="preload stylesheet" as="style">
-
+<link rel="canonical" href="https://wendyadi.github.io/posts/short-circuiting/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.b609c58d5c11bb90b1a54e04005d74ad1ddf22165eb79f5533967e57df9c3b50.css" integrity="sha256-tgnFjVwRu5CxpU4EAF10rR3fIhZet59VM5Z&#43;V9&#43;cO1A=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://wendyadi.github.io/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://wendyadi.github.io/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="https://wendyadi.github.io/favicon-32x32.png">
@@ -23,14 +20,110 @@ Short circuiting adalah teknik mengoptimasi kode kita untuk bisa keluar dari log
 <link rel="mask-icon" href="https://wendyadi.github.io/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<meta name="generator" content="Hugo 0.111.3">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="Short Circuiting" />
+<meta property="og:description" content="Beberapa minggu belakangan ini saat mencari-cari video tentang High Frequency Trading (HFT), saya menemukan video dibawah ini: 5 ways quant developers speed up their code (without external hardware), atau 5 cara quant developer mempercepat kode mereka (tanpa hardware external).
+Dalam video itu dibahas mengenai teknik Short Circuiting yang saya baru tahu setelah menonton video ini. Dan karena menarik saya jadi ingin menuliskannya dalam artikel agar tidak lupa.
+Short circuiting adalah teknik mengoptimasi kode kita untuk bisa keluar dari logika pengecekan secepat mungkin karena program kita tidak perlu mengecek parameter selanjutnya." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://wendyadi.github.io/posts/short-circuiting/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-02-04T01:53:32+07:00" />
+<meta property="article:modified_time" content="2023-02-04T01:53:32+07:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Short Circuiting"/>
+<meta name="twitter:description" content="Beberapa minggu belakangan ini saat mencari-cari video tentang High Frequency Trading (HFT), saya menemukan video dibawah ini: 5 ways quant developers speed up their code (without external hardware), atau 5 cara quant developer mempercepat kode mereka (tanpa hardware external).
+Dalam video itu dibahas mengenai teknik Short Circuiting yang saya baru tahu setelah menonton video ini. Dan karena menarik saya jadi ingin menuliskannya dalam artikel agar tidak lupa.
+Short circuiting adalah teknik mengoptimasi kode kita untuk bisa keluar dari logika pengecekan secepat mungkin karena program kita tidak perlu mengecek parameter selanjutnya."/>
 
 
-
-
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://wendyadi.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Short Circuiting",
+      "item": "https://wendyadi.github.io/posts/short-circuiting/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Short Circuiting",
+  "name": "Short Circuiting",
+  "description": "Beberapa minggu belakangan ini saat mencari-cari video tentang High Frequency Trading (HFT), saya menemukan video dibawah ini: 5 ways quant developers speed up their code (without external hardware), atau 5 cara quant developer mempercepat kode mereka (tanpa hardware external).\nDalam video itu dibahas mengenai teknik Short Circuiting yang saya baru tahu setelah menonton video ini. Dan karena menarik saya jadi ingin menuliskannya dalam artikel agar tidak lupa.\nShort circuiting adalah teknik mengoptimasi kode kita untuk bisa keluar dari logika pengecekan secepat mungkin karena program kita tidak perlu mengecek parameter selanjutnya.",
+  "keywords": [
+    "id", "golang", "optimization", "short-circuiting"
+  ],
+  "articleBody": "Beberapa minggu belakangan ini saat mencari-cari video tentang High Frequency Trading (HFT), saya menemukan video dibawah ini: 5 ways quant developers speed up their code (without external hardware), atau 5 cara quant developer mempercepat kode mereka (tanpa hardware external).\nDalam video itu dibahas mengenai teknik Short Circuiting yang saya baru tahu setelah menonton video ini. Dan karena menarik saya jadi ingin menuliskannya dalam artikel agar tidak lupa.\nShort circuiting adalah teknik mengoptimasi kode kita untuk bisa keluar dari logika pengecekan secepat mungkin karena program kita tidak perlu mengecek parameter selanjutnya. Dalam prakteknya, misalkan kita punya dua operasi pengecekan ShortCheck() bool dan LongCheck() bool, dimana ShortCheck() memerlukan waktu yang lebih sedikit dari pada LongCheck(), maka lebih baik kita mengecek ShortCheck() dulu dari pada LongCheck().\n// Buat seperti ini if ShortCheck() \u0026\u0026 LongCheck() { } if ShortCheck() || LongCheck() { } // Dari pada if LongCheck() \u0026\u0026 ShortCheck() { } if LongCheck() || ShortCheck() { } Kenapa begitu? Berikut penjelasannya.\nShort Circuiting pada operator AND (\u0026\u0026) dan OR (||) Mari kita bahas dari operasi AND (\u0026\u0026) dulu. Berikut adalah kemungkinan kombinasi A\u0026\u0026B:\nA B A\u0026\u0026B true true true true false false false true false false false false Jika kita perhatikan tabel diatas. Jika A sebagai input sebelah kiri adalah true, maka output dari A\u0026\u0026B akan bergantung pada value B. Namun jika A adalah false maka sudah pasti A\u0026\u0026B hasilnya adalah false, baik untuk value B itu true atau false. Dengan kata lain, tidak peduli apa value dari B, jika A = false maka A\u0026\u0026B pasti false.\nKemudian mari kita cek tabel operator OR (||), berikut table kombinasi A||B:\nA B A||B true true true true false true false true true false false false Mirip namun agak berbeda dengan operator AND, pada operator OR jika input sebelah kiri adalah false maka output dari A||B akan bergantung pada value B. Namun jika A adalah true maka sudah pasti A||B adalah true. Tidak peduli apa value dari B, jika A = true maka A||B pasti true.\nOleh karena logika diataslah, interpreter dan compiler didesain untuk keluar dari operasi pengecekan secepat mungkin jika short circuiting dapat dilakukan. Karena tidak perlu mengecek parameter selanjutnya jika sudah bisa dipastikan hasilnya. Contoh kode Mari kita lihat contoh kode berikut:\npackage main import ( \"fmt\" \"time\" ) func ShortCheck() bool { time.Sleep(1 * time.Second) return true } func LongCheck() bool { time.Sleep(4 * time.Second) return false } func main() { tStart := time.Now() if ShortCheck() \u0026\u0026 LongCheck() { fmt.Println(\"condition fulfilled\") } fmt.Println(\"done checking: \", time.Since(tStart).Seconds(), \" second\") } Output dari kode diatas adalah:\ndone checking: 5 second Kenapa 5 detik? karena ShortCheck() memerlukan waktu 1 detik, dan LongCheck() memerlukan waktu 4 detik. Jadi total waktu yang dibutuhkan adalah 5 detik.\nSekarang mari kita ubah ShortCheck mejadi return false (karena kita tahu bahwa jika A = false maka A\u0026\u0026B pasti false). Berikut kode lengkapnya:\npackage main import ( \"fmt\" \"time\" ) func ShortCheck() bool { time.Sleep(1 * time.Second) return false } func LongCheck() bool { time.Sleep(4 * time.Second) return false } func main() { tStart := time.Now() if ShortCheck() \u0026\u0026 LongCheck() { fmt.Println(\"condition fulfilled\") } fmt.Println(\"done checking: \", time.Since(tStart).Seconds(), \" second\") } Output dari kode diatas adalah:\ndone checking: 1 second Perhatikan bahwa outputnya adalah 1 detik, bukan 5 detik. Karena ShortCheck() mengembalikan false maka LongCheck() tidak perlu dieksekusi. Oleh karena itu total waktu yang dibutuhkan adalah 1 detik.\n",
+  "wordCount" : "558",
+  "inLanguage": "en",
+  "datePublished": "2023-02-04T01:53:32+07:00",
+  "dateModified": "2023-02-04T01:53:32+07:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://wendyadi.github.io/posts/short-circuiting/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "wendyadi.github.io",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://wendyadi.github.io/favicon.ico"
+    }
+  }
+}
+</script>
 </head>
 
-<body class="">
+<body class="" id="top">
 <script>
     if (localStorage.getItem("pref-theme") === "dark") {
         document.body.classList.add('dark');
@@ -41,83 +134,75 @@ Short circuiting adalah teknik mengoptimasi kode kita untuk bisa keluar dari log
     }
 
 </script>
-<noscript>
-    <style type="text/css">
-        .theme-toggle,
-        .top-link {
-            display: none;
-        }
 
-    </style>
-</noscript>
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="https://wendyadi.github.io/" accesskey="h">wendyadi.github.io</a>
-            <span class="logo-switches">
-                <span class="theme-toggle">
-                    <a id="theme-toggle" accesskey="t">
-                        <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round">
-                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-                        </svg>
-                        <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round">
-                            <circle cx="12" cy="12" r="5"></circle>
-                            <line x1="12" y1="1" x2="12" y2="3"></line>
-                            <line x1="12" y1="21" x2="12" y2="23"></line>
-                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                            <line x1="1" y1="12" x2="3" y2="12"></line>
-                            <line x1="21" y1="12" x2="23" y2="12"></line>
-                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-                        </svg>
-                    </a>
-                </span>
-                
-            </span>
+            <a href="https://wendyadi.github.io/" accesskey="h" title="wendyadi.github.io (Alt + H)">wendyadi.github.io</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
         </div>
-        <ul class="menu" id="menu" onscroll="menu_on_scroll()"><div class="social-icons"></div>
-
+        <ul id="menu">
             <li>
-                <a href="https://wendyadi.github.io/archives/" target="_blank">
-                    <span>
-                        Archives
-                    </span>
+                <a href="https://wendyadi.github.io/archives/" title="Archives">
+                    <span>Archives</span>
                 </a>
             </li>
             <li>
-                <a href="https://www.linkedin.com/in/wendyadi/" target="_blank">
-                    <span>
-                        Linkedin
-                    </span>
+                <a href="https://www.linkedin.com/in/wendyadi/" title="Linkedin">
+                    <span>Linkedin</span>&nbsp;
+                    <svg fill="none" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round"
+                        stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12">
+                        <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"></path>
+                        <path d="M15 3h6v6"></path>
+                        <path d="M10 14L21 3"></path>
+                    </svg>
                 </a>
-            </li></ul>
+            </li>
+        </ul>
     </nav>
 </header>
-
-    <main class="main">
+<main class="main">
 
 <article class="post-single">
   <header class="post-header">
-    <h1 class="post-title">
+    
+    <h1 class="post-title entry-hint-parent">
       Short Circuiting
     </h1>
-    <div class="post-meta">February 4, 2023
+    <div class="post-meta"><span title='2023-02-04 01:53:32 +0700 WIB'>February 4, 2023</span>
 
-    </div>
+</div>
   </header> 
-
-  <div class="post-content">
-<p>Beberapa minggu belakangan ini saat mencari-cari video tentang High Frequency Trading (HFT), saya menemukan video dibawah ini: 5 ways quant developers speed up their code (without external hardware), atau 5 cara quant developer mempercepat kode mereka (tanpa hardware external).</p>
-<iframe width="560" height="315" src="https://www.youtube.com/embed/TfoUy_HjxG4" title="YouTube video player" style="display:block; margin: 20px auto" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+  <div class="post-content"><p>Beberapa minggu belakangan ini saat mencari-cari video tentang High Frequency Trading (HFT), saya menemukan video dibawah ini: 5 ways quant developers speed up their code (without external hardware), atau 5 cara quant developer mempercepat kode mereka (tanpa hardware external).</p>
+<!-- raw HTML omitted -->
 <p>Dalam video itu dibahas mengenai teknik Short Circuiting yang saya baru tahu setelah menonton video ini. Dan karena menarik saya jadi ingin menuliskannya dalam artikel agar tidak lupa.</p>
-<p>Short circuiting adalah teknik mengoptimasi kode kita untuk bisa keluar dari logika pengecekan secepat mungkin karena program kita tidak perlu mengecek parameter selanjutnya. Dalam prakteknya, misalkan kita punya dua operasi pengecekan <code>ShortCheck() bool</code> dan <code>LongCheck() bool</code>, dimana <code>ShortCheck()</code> memerlukan waktu yang lebih cepat dari pada <code>LongCheck()</code>, maka lebih baik kita mengecek <code>ShortCheck()</code> dulu dari pada <code>LongCheck()</code>.</p>
+<p>Short circuiting adalah teknik mengoptimasi kode kita untuk bisa keluar dari logika pengecekan secepat mungkin karena program kita tidak perlu mengecek parameter selanjutnya. Dalam prakteknya, misalkan kita punya dua operasi pengecekan <code>ShortCheck() bool</code> dan <code>LongCheck() bool</code>, dimana <code>ShortCheck()</code> memerlukan waktu yang lebih sedikit dari pada <code>LongCheck()</code>, maka lebih baik kita mengecek <code>ShortCheck()</code> dulu dari pada <code>LongCheck()</code>.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// Buat seperti ini
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">if</span> <span style="color:#a6e22e">ShortCheck</span>() <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">LongCheck</span>() {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#a6e22e">ShortCheck</span>() <span style="color:#f92672">||</span> <span style="color:#a6e22e">LongCheck</span>() {
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>}
 </span></span><span style="display:flex;"><span>
@@ -125,8 +210,11 @@ Short circuiting adalah teknik mengoptimasi kode kita untuk bisa keluar dari log
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">if</span> <span style="color:#a6e22e">LongCheck</span>() <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">ShortCheck</span>() {
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#a6e22e">LongCheck</span>() <span style="color:#f92672">||</span> <span style="color:#a6e22e">ShortCheck</span>() {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>Kenapa begitu? Berikut penjelasannya.</p>
-<h2 id="short-circuiting-pada-operator-and-">Short Circuiting pada operator AND (&amp;&amp;)<a hidden class="anchor" aria-hidden="true" href="#short-circuiting-pada-operator-and-">#</a></h2>
+<h3 id="short-circuiting-pada-operator-and--dan-or-">Short Circuiting pada operator AND (&amp;&amp;) dan OR (||)<a hidden class="anchor" aria-hidden="true" href="#short-circuiting-pada-operator-and--dan-or-">#</a></h3>
 <p>Mari kita bahas dari operasi AND (&amp;&amp;) dulu. Berikut adalah kemungkinan kombinasi A&amp;&amp;B:</p>
 <table>
 <thead>
@@ -160,7 +248,7 @@ Short circuiting adalah teknik mengoptimasi kode kita untuk bisa keluar dari log
 </tbody>
 </table>
 <p>Jika kita perhatikan tabel diatas. Jika A sebagai input sebelah kiri adalah <code>true</code>, maka output dari <code>A&amp;&amp;B</code> akan bergantung pada value B. Namun jika A adalah <code>false</code> maka sudah pasti <code>A&amp;&amp;B</code> hasilnya adalah <code>false</code>, baik untuk value B itu true atau false. Dengan kata lain, <strong>tidak peduli apa value dari B, jika A = false maka A&amp;&amp;B pasti false</strong>.</p>
-<p>Kemudian mari kita cek tabel operator OR (||), berikut kombinasi A||B:</p>
+<p>Kemudian mari kita cek tabel operator OR (||), berikut table kombinasi A||B:</p>
 <table>
 <thead>
 <tr>
@@ -192,33 +280,128 @@ Short circuiting adalah teknik mengoptimasi kode kita untuk bisa keluar dari log
 </tr>
 </tbody>
 </table>
-<p>Mirip namun agak berbeda dengan operator AND. Pada operator OR jika input sebelah kiri adalah <code>false</code> maka output dari <code>A||B</code> akan bergantung pada value B. Namun jika A adalah <code>true</code> maka sudah pasti <code>A||B</code> adalah <code>true</code>. <strong>Tidak peduli apa value dari B, jika A = true maka A||B pasti true</strong>.</p>
+<p>Mirip namun agak berbeda dengan operator AND, pada operator OR jika input sebelah kiri adalah <code>false</code> maka output dari <code>A||B</code> akan bergantung pada value B. Namun jika A adalah <code>true</code> maka sudah pasti <code>A||B</code> adalah <code>true</code>. <strong>Tidak peduli apa value dari B, jika A = true maka A||B pasti true</strong>.</p>
+<blockquote>
+<h3 id="oleh-karena-logika-diataslah-interpreter-dan-compiler-didesain-untuk-keluar-dari-operasi-pengecekan-secepat-mungkin-jika-short-circuiting-dapat-dilakukan-karena-tidak-perlu-mengecek-parameter-selanjutnya-jika-sudah-bisa-dipastikan-hasilnya">Oleh karena logika diataslah, interpreter dan compiler didesain untuk keluar dari operasi pengecekan secepat mungkin jika short circuiting dapat dilakukan. Karena tidak perlu mengecek parameter selanjutnya jika sudah bisa dipastikan hasilnya.<a hidden class="anchor" aria-hidden="true" href="#oleh-karena-logika-diataslah-interpreter-dan-compiler-didesain-untuk-keluar-dari-operasi-pengecekan-secepat-mungkin-jika-short-circuiting-dapat-dilakukan-karena-tidak-perlu-mengecek-parameter-selanjutnya-jika-sudah-bisa-dipastikan-hasilnya">#</a></h3>
+</blockquote>
+<h2 id="contoh-kode">Contoh kode<a hidden class="anchor" aria-hidden="true" href="#contoh-kode">#</a></h2>
+<p>Mari kita lihat contoh kode berikut:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> (
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;fmt&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;time&#34;</span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">ShortCheck</span>() <span style="color:#66d9ef">bool</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Sleep</span>(<span style="color:#ae81ff">1</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">LongCheck</span>() <span style="color:#66d9ef">bool</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Sleep</span>(<span style="color:#ae81ff">4</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">tStart</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Now</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">ShortCheck</span>() <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">LongCheck</span>() {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;condition fulfilled&#34;</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;done checking: &#34;</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Since</span>(<span style="color:#a6e22e">tStart</span>).<span style="color:#a6e22e">Seconds</span>(), <span style="color:#e6db74">&#34; second&#34;</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Output dari kode diatas adalah:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#66d9ef">done</span> checking:  <span style="color:#ae81ff">5</span>  second
+</span></span></code></pre></div><p>Kenapa 5 detik? karena <code>ShortCheck()</code> memerlukan waktu 1 detik, dan <code>LongCheck()</code> memerlukan waktu 4 detik. Jadi total waktu yang dibutuhkan adalah 5 detik.</p>
+<p>Sekarang mari kita ubah ShortCheck mejadi return <code>false</code> (karena kita tahu bahwa jika A = false maka A&amp;&amp;B pasti false). Berikut kode lengkapnya:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> (
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;fmt&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;time&#34;</span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">ShortCheck</span>() <span style="color:#66d9ef">bool</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Sleep</span>(<span style="color:#ae81ff">1</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">LongCheck</span>() <span style="color:#66d9ef">bool</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Sleep</span>(<span style="color:#ae81ff">4</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">tStart</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Now</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">ShortCheck</span>() <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">LongCheck</span>() {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;condition fulfilled&#34;</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;done checking: &#34;</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Since</span>(<span style="color:#a6e22e">tStart</span>).<span style="color:#a6e22e">Seconds</span>(), <span style="color:#e6db74">&#34; second&#34;</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Output dari kode diatas adalah:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#66d9ef">done</span> checking:  <span style="color:#ae81ff">1</span>  second
+</span></span></code></pre></div><p>Perhatikan bahwa outputnya adalah 1 detik, bukan 5 detik. Karena <code>ShortCheck()</code> mengembalikan <code>false</code> maka <code>LongCheck()</code> tidak perlu dieksekusi. Oleh karena itu total waktu yang dibutuhkan adalah 1 detik.</p>
 
-</div>
+
+  </div>
+
   <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://wendyadi.github.io/tags/id/">id</a></li>
+      <li><a href="https://wendyadi.github.io/tags/golang/">golang</a></li>
+      <li><a href="https://wendyadi.github.io/tags/optimization/">optimization</a></li>
+      <li><a href="https://wendyadi.github.io/tags/short-circuiting/">short-circuiting</a></li>
+    </ul>
   </footer>
 </article>
-    </main><footer class="footer">
-    <span>&copy; 2023 <a href="https://wendyadi.github.io/">wendyadi.github.io</a></span>
-    <span>&middot;</span>
-    <span>Powered by <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a></span>
-    <span>&middot;</span>
-    <span>Theme <a href="https://git.io/hugopapermod" rel="noopener" target="_blank">PaperMod</a></span>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2024 <a href="https://wendyadi.github.io/">wendyadi.github.io</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
 </footer>
-<button class="top-link" id="top-link" type="button" aria-label="go to top" title="Go to Top" accesskey="g">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6">
-        <path d="M12 6H0l6-6z" /></svg>
-</button>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
 
-
-
-<script defer src="https://wendyadi.github.io/assets/js/highlight.min.js" onload="hljs.initHighlightingOnLoad();"></script>
 <script>
-    window.onload = function () {
-        if (localStorage.getItem("menu-scroll-position")) {
-            document.getElementById('menu').scrollLeft = localStorage.getItem("menu-scroll-position");
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
         }
     }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
     var mybutton = document.getElementById("top-link");
     window.onscroll = function () {
         if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
@@ -229,15 +412,6 @@ Short circuiting adalah teknik mengoptimasi kode kita untuk bisa keluar dari log
             mybutton.style.opacity = "0";
         }
     };
-    mybutton.onclick = function () {
-        document.body.scrollTop = 0;
-        document.documentElement.scrollTop = 0;
-        window.location.hash = ''
-    }
-
-    function menu_on_scroll() {
-        localStorage.setItem("menu-scroll-position", document.getElementById('menu').scrollLeft);
-    }
 
 </script>
 <script>
@@ -252,7 +426,6 @@ Short circuiting adalah teknik mengoptimasi kode kita untuk bisa keluar dari log
     })
 
 </script>
-
 </body>
 
 </html>
