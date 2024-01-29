@@ -13,7 +13,7 @@
       <link>https://wendyadi.github.io/posts/short-circuiting/</link>
       <pubDate>Sat, 04 Feb 2023 01:53:32 +0700</pubDate>
       <guid>https://wendyadi.github.io/posts/short-circuiting/</guid>
-      <description>Beberapa minggu belakangan ini saat mencari-cari video tentang High Frequency Trading (HFT), saya menemukan video dibawah ini: 5 ways quant developers speed up their code (without external hardware), atau 5 cara quant developer mempercepat kode mereka (tanpa hardware external).
+      <description>Beberapa minggu belakangan ini saat mencari-cari video tentang High Frequency Trading (HFT), saya menemukan video dibawah ini: 5 ways quant developers speed up their code (5 cara quant developer mempercepat kode mereka).
 Dalam video itu dibahas mengenai teknik Short Circuiting yang saya baru tahu setelah menonton video ini. Dan karena menarik saya jadi ingin menuliskannya dalam artikel agar tidak lupa.
 Short circuiting adalah teknik mengoptimasi kode kita untuk bisa keluar dari logika pengecekan secepat mungkin karena program kita tidak perlu mengecek parameter selanjutnya.</description>
     </item>

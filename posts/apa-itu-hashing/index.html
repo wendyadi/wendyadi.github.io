@@ -215,94 +215,94 @@ Enkripsi-deskripsi Jika kita meng-encrypt sebuah Data maka kita bisa mengembalik
 <hr>
 <h2 id="contoh">Contoh<a hidden class="anchor" aria-hidden="true" href="#contoh">#</a></h2>
 <h3 id="contoh-function-encryptiondecryption">Contoh function Encryption/Decryption<a hidden class="anchor" aria-hidden="true" href="#contoh-function-encryptiondecryption">#</a></h3>
-<pre tabindex="0"><code>package main
-
-import (
-	&#34;crypto/aes&#34;
-	&#34;crypto/cipher&#34;
-	&#34;crypto/rand&#34;
-	&#34;encoding/hex&#34;
-	&#34;fmt&#34;
-	&#34;io&#34;
-)
-
-func main() {
-
-	bytes := []byte(&#34;1234567890abcdefghijklmnopABCDEF&#34;)
-
-	key := hex.EncodeToString(bytes) //encode key in bytes to string and keep as secret, put in a vault
-	fmt.Printf(&#34;key to encrypt/decrypt : %s\n&#34;, key)
-
-	encrypted := encrypt(&#34;sayasukamakan&#34;, key)
-	fmt.Printf(&#34;encrypted : %s\n&#34;, encrypted)
-
-	decrypted := decrypt(encrypted, key)
-	fmt.Printf(&#34;decrypted : %s\n&#34;, decrypted)
-}
-
-func encrypt(stringToEncrypt string, keyString string) (encryptedString string) {
-
-	//Since the key is in string, we need to convert decode it to bytes
-	key, _ := hex.DecodeString(keyString)
-	plaintext := []byte(stringToEncrypt)
-
-	//Create a new Cipher Block from the key
-	block, err := aes.NewCipher(key)
-	if err != nil {
-		panic(err.Error())
-	}
-
-	//Create a new GCM - https://en.wikipedia.org/wiki/Galois/Counter_Mode
-	//https://golang.org/pkg/crypto/cipher/#NewGCM
-	aesGCM, err := cipher.NewGCM(block)
-	if err != nil {
-		panic(err.Error())
-	}
-
-	//Create a nonce. Nonce should be from GCM
-	nonce := make([]byte, aesGCM.NonceSize())
-	if _, err = io.ReadFull(rand.Reader, nonce); err != nil {
-		panic(err.Error())
-	}
-
-	//Encrypt the data using aesGCM.Seal
-	//Since we don&#39;t want to save the nonce somewhere else in this case, we add it as a prefix to the encrypted data. The first nonce argument in Seal is the prefix.
-	ciphertext := aesGCM.Seal(nonce, nonce, plaintext, nil)
-	return fmt.Sprintf(&#34;%x&#34;, ciphertext)
-}
-
-func decrypt(encryptedString string, keyString string) (decryptedString string) {
-
-	key, _ := hex.DecodeString(keyString)
-	enc, _ := hex.DecodeString(encryptedString)
-
-	//Create a new Cipher Block from the key
-	block, err := aes.NewCipher(key)
-	if err != nil {
-		panic(err.Error())
-	}
-
-	//Create a new GCM
-	aesGCM, err := cipher.NewGCM(block)
-	if err != nil {
-		panic(err.Error())
-	}
-
-	//Get the nonce size
-	nonceSize := aesGCM.NonceSize()
-
-	//Extract the nonce from the encrypted data
-	nonce, ciphertext := enc[:nonceSize], enc[nonceSize:]
-
-	//Decrypt the data
-	plaintext, err := aesGCM.Open(nil, nonce, ciphertext, nil)
-	if err != nil {
-		panic(err.Error())
-	}
-
-	return fmt.Sprintf(&#34;%s&#34;, plaintext)
-}
-</code></pre><p>Source code: <a href="https://www.melvinvivas.com/how-to-encrypt-and-decrypt-data-using-aes">sumber</a></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> (
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;crypto/aes&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;crypto/cipher&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;crypto/rand&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;encoding/hex&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;fmt&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;io&#34;</span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">bytes</span> <span style="color:#f92672">:=</span> []byte(<span style="color:#e6db74">&#34;1234567890abcdefghijklmnopABCDEF&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">key</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">hex</span>.<span style="color:#a6e22e">EncodeToString</span>(<span style="color:#a6e22e">bytes</span>) <span style="color:#75715e">//encode key in bytes to string and keep as secret, put in a vault
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;key to encrypt/decrypt : %s\n&#34;</span>, <span style="color:#a6e22e">key</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">encrypted</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">encrypt</span>(<span style="color:#e6db74">&#34;sayasukamakan&#34;</span>, <span style="color:#a6e22e">key</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;encrypted : %s\n&#34;</span>, <span style="color:#a6e22e">encrypted</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">decrypted</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">decrypt</span>(<span style="color:#a6e22e">encrypted</span>, <span style="color:#a6e22e">key</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;decrypted : %s\n&#34;</span>, <span style="color:#a6e22e">decrypted</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">encrypt</span>(<span style="color:#a6e22e">stringToEncrypt</span> <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">keyString</span> <span style="color:#66d9ef">string</span>) (<span style="color:#a6e22e">encryptedString</span> <span style="color:#66d9ef">string</span>) {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//Since the key is in string, we need to convert decode it to bytes
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">key</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">hex</span>.<span style="color:#a6e22e">DecodeString</span>(<span style="color:#a6e22e">keyString</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">plaintext</span> <span style="color:#f92672">:=</span> []byte(<span style="color:#a6e22e">stringToEncrypt</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//Create a new Cipher Block from the key
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">block</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">aes</span>.<span style="color:#a6e22e">NewCipher</span>(<span style="color:#a6e22e">key</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		panic(<span style="color:#a6e22e">err</span>.<span style="color:#a6e22e">Error</span>())
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//Create a new GCM - https://en.wikipedia.org/wiki/Galois/Counter_Mode
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#75715e">//https://golang.org/pkg/crypto/cipher/#NewGCM
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">aesGCM</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">cipher</span>.<span style="color:#a6e22e">NewGCM</span>(<span style="color:#a6e22e">block</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		panic(<span style="color:#a6e22e">err</span>.<span style="color:#a6e22e">Error</span>())
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//Create a nonce. Nonce should be from GCM
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">nonce</span> <span style="color:#f92672">:=</span> make([]<span style="color:#66d9ef">byte</span>, <span style="color:#a6e22e">aesGCM</span>.<span style="color:#a6e22e">NonceSize</span>())
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">io</span>.<span style="color:#a6e22e">ReadFull</span>(<span style="color:#a6e22e">rand</span>.<span style="color:#a6e22e">Reader</span>, <span style="color:#a6e22e">nonce</span>); <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		panic(<span style="color:#a6e22e">err</span>.<span style="color:#a6e22e">Error</span>())
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//Encrypt the data using aesGCM.Seal
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#75715e">//Since we don&#39;t want to save the nonce somewhere else in this case, we add it as a prefix to the encrypted data. The first nonce argument in Seal is the prefix.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">ciphertext</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">aesGCM</span>.<span style="color:#a6e22e">Seal</span>(<span style="color:#a6e22e">nonce</span>, <span style="color:#a6e22e">nonce</span>, <span style="color:#a6e22e">plaintext</span>, <span style="color:#66d9ef">nil</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Sprintf</span>(<span style="color:#e6db74">&#34;%x&#34;</span>, <span style="color:#a6e22e">ciphertext</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">decrypt</span>(<span style="color:#a6e22e">encryptedString</span> <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">keyString</span> <span style="color:#66d9ef">string</span>) (<span style="color:#a6e22e">decryptedString</span> <span style="color:#66d9ef">string</span>) {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">key</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">hex</span>.<span style="color:#a6e22e">DecodeString</span>(<span style="color:#a6e22e">keyString</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">enc</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">hex</span>.<span style="color:#a6e22e">DecodeString</span>(<span style="color:#a6e22e">encryptedString</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//Create a new Cipher Block from the key
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">block</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">aes</span>.<span style="color:#a6e22e">NewCipher</span>(<span style="color:#a6e22e">key</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		panic(<span style="color:#a6e22e">err</span>.<span style="color:#a6e22e">Error</span>())
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//Create a new GCM
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">aesGCM</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">cipher</span>.<span style="color:#a6e22e">NewGCM</span>(<span style="color:#a6e22e">block</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		panic(<span style="color:#a6e22e">err</span>.<span style="color:#a6e22e">Error</span>())
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//Get the nonce size
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">nonceSize</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">aesGCM</span>.<span style="color:#a6e22e">NonceSize</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//Extract the nonce from the encrypted data
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">nonce</span>, <span style="color:#a6e22e">ciphertext</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">enc</span>[:<span style="color:#a6e22e">nonceSize</span>], <span style="color:#a6e22e">enc</span>[<span style="color:#a6e22e">nonceSize</span>:]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//Decrypt the data
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">plaintext</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">aesGCM</span>.<span style="color:#a6e22e">Open</span>(<span style="color:#66d9ef">nil</span>, <span style="color:#a6e22e">nonce</span>, <span style="color:#a6e22e">ciphertext</span>, <span style="color:#66d9ef">nil</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>		panic(<span style="color:#a6e22e">err</span>.<span style="color:#a6e22e">Error</span>())
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Sprintf</span>(<span style="color:#e6db74">&#34;%s&#34;</span>, <span style="color:#a6e22e">plaintext</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Source code: <a href="https://www.melvinvivas.com/how-to-encrypt-and-decrypt-data-using-aes">sumber</a></p>
 <figure>
     <img loading="lazy" src="/img/encrypt-result-go.png#center"/> 
 </figure>
