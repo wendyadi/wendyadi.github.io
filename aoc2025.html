@@ -1,0 +1,1893 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advent of Code 2025 - LLM Benchmark Analysis</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #00d4ff, #7b2cbf);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #888;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .card-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            background: linear-gradient(90deg, #00d4ff, #00ff88);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .card-label {
+            color: #888;
+            margin-top: 5px;
+            font-size: 0.9rem;
+        }
+
+        .chart-section {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .chart-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .chart-title::before {
+            content: '';
+            width: 4px;
+            height: 24px;
+            background: linear-gradient(180deg, #00d4ff, #7b2cbf);
+            border-radius: 2px;
+        }
+
+        .chart-analysis {
+            color: #aaa;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(0, 212, 255, 0.05);
+            border-left: 3px solid rgba(0, 212, 255, 0.3);
+            border-radius: 0 8px 8px 0;
+        }
+
+        .chart-container {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        svg {
+            display: block;
+            margin: 0 auto;
+        }
+
+        .tooltip {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.9);
+            border: 1px solid #00d4ff;
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 13px;
+            pointer-events: none;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0, 212, 255, 0.3);
+        }
+
+        .legend {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+        }
+
+        .model-selector {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+
+        .model-toggle {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid transparent;
+            transition: all 0.2s ease;
+            font-size: 0.85rem;
+        }
+
+        .model-toggle:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .model-toggle.active {
+            border-color: currentColor;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .model-toggle.dimmed {
+            opacity: 0.3;
+        }
+
+        .model-toggle .color-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .trend-controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .trend-btn {
+            padding: 6px 16px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.05);
+            color: #e0e0e0;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
+        }
+
+        .trend-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .trend-btn.active {
+            background: rgba(0, 212, 255, 0.2);
+            border-color: #00d4ff;
+        }
+
+        .axis text {
+            fill: #888;
+            font-size: 12px;
+        }
+
+        .axis line, .axis path {
+            stroke: #444;
+        }
+
+        .grid line {
+            stroke: #333;
+            stroke-opacity: 0.5;
+        }
+
+        .grid path {
+            stroke-width: 0;
+        }
+
+        .model-rank {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            margin-left: 10px;
+        }
+
+        .rank-1 { background: linear-gradient(90deg, #ffd700, #ffaa00); color: #000; }
+        .rank-2 { background: linear-gradient(90deg, #c0c0c0, #a0a0a0); color: #000; }
+        .rank-3 { background: linear-gradient(90deg, #cd7f32, #b87333); color: #fff; }
+
+        .insights-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .insight-card {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .insight-title {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            color: #00d4ff;
+        }
+
+        .insight-list {
+            list-style: none;
+        }
+
+        .insight-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .insight-list li:last-child {
+            border-bottom: none;
+        }
+
+        .insight-list-scroll {
+            max-height: 175px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+
+        .insight-list-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .insight-list-scroll::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 3px;
+        }
+
+        .insight-list-scroll::-webkit-scrollbar-thumb {
+            background: rgba(0, 212, 255, 0.3);
+            border-radius: 3px;
+        }
+
+        .insight-list-scroll::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 212, 255, 0.5);
+        }
+
+        .model-logo {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            margin-right: 8px;
+            vertical-align: middle;
+            object-fit: contain;
+        }
+
+        .model-logo.needs-bg {
+            background: #fff;
+            padding: 2px;
+        }
+
+        .model-name-with-logo {
+            display: flex;
+            align-items: center;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .lang-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 5px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px;
+            border-radius: 25px;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .lang-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            background: transparent;
+            color: #888;
+        }
+
+        .lang-btn:hover {
+            color: #fff;
+        }
+
+        .lang-btn.active {
+            background: linear-gradient(90deg, #00d4ff, #7b2cbf);
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="lang-toggle">
+        <button class="lang-btn active" data-lang="en">EN</button>
+        <button class="lang-btn" data-lang="id">ID</button>
+    </div>
+
+    <div class="container">
+        <h1 data-i18n="title">Advent of Code 2025 - LLM Benchmark</h1>
+        <p class="subtitle" data-i18n="subtitle">Comprehensive Analysis of AI Model Performance</p>
+
+        <div class="summary-cards" id="summary-cards"></div>
+
+        <div class="insights-section" id="insights-section"></div>
+
+        <div class="chart-section">
+            <h2 class="chart-title" data-i18n="heatmapTitle">Performance Heatmap</h2>
+            <p class="chart-analysis" data-i18n="heatmapAnalysis">This heatmap reveals clear patterns in model performance across the 12-day challenge. Early days (1-5) show predominantly green cells indicating broad success across most models. However, a notable shift occurs from Day 6 onwards, where increased red and orange cells indicate growing difficulty. Day 7 stands out with significant gaps (gray cells) as many models lack results, while Day 12 Part 2 remains unattempted across all models. Gemini-3-pro demonstrates the most consistent coverage with attempts on all available problems.</p>
+            <div class="chart-container" id="heatmap"></div>
+            <div class="legend" id="heatmap-legend"></div>
+        </div>
+
+        <div class="chart-section">
+            <h2 class="chart-title" data-i18n="successRateTitle">Overall Success Rate by Model</h2>
+            <p class="chart-analysis" data-i18n="successRateAnalysis">Gemini-3-pro leads the benchmark with approximately 87% success rate, followed closely by Claude-opus-4.5 and Mistral-large-3-2512 in the 70-75% range. The mid-tier performers (GPT-5.1-codex-max, Grok-code-fast-1, Qwen-3-max) cluster around 65-70%. GPT-5.2 shows surprisingly lower performance at approximately 55%, while Kimi-k2-thinking and Deepseek-v3.2 trail at the bottom around 50-55%. This distribution highlights significant variance in LLM coding capabilities on algorithmic challenges.</p>
+            <div class="chart-container" id="success-rate-chart"></div>
+        </div>
+
+        <div class="chart-section">
+            <h2 class="chart-title" data-i18n="breakdownTitle">Result Breakdown by Model</h2>
+            <p class="chart-analysis" data-i18n="breakdownAnalysis">This stacked breakdown reveals failure modes differ significantly across models. Code-timeout (orange) is the dominant failure type for most models, particularly prevalent in Claude-sonnet-4.5, Claude-opus-4.5, and Qwen-3-max, suggesting inefficient algorithm implementations. Direct failures (red) are more common in Deepseek-v3.2 and Qwen-3-max. Kimi-k2-thinking shows a unique pattern with multiple generation timeouts (pink), indicating the model's thinking process may exceed time limits. Gemini-3-pro's large green segment confirms its top-performer status with minimal failures across all categories.</p>
+            <div class="chart-container" id="stacked-chart"></div>
+            <div class="legend" id="stacked-legend"></div>
+        </div>
+
+        <div class="chart-section">
+            <h2 class="chart-title" data-i18n="scatterTitle">Time vs Accuracy Trade-off</h2>
+            <p class="chart-analysis" data-i18n="scatterAnalysis">The scatter plot reveals no clear correlation between generation speed and accuracy. Mistral-large-3-2512 occupies the optimal "Fast & Accurate" quadrant with low generation time (~5s) and high success rate (~72%). Gemini-3-pro achieves the highest accuracy but with moderate generation times (~25s). Kimi-k2-thinking stands out as the slowest model (~75s average) while delivering below-median accuracy, suggesting its extended "thinking" process doesn't translate to better solutions. Claude models cluster in the fast-but-moderate-accuracy zone, while GPT-5.1-codex-max shows high time cost without proportional accuracy gains.</p>
+            <div class="chart-container" id="scatter-chart"></div>
+        </div>
+
+        <div class="chart-section">
+            <h2 class="chart-title" data-i18n="timeTitle">Average Generation Time by Model</h2>
+            <p class="chart-analysis" data-i18n="timeAnalysis">Generation times vary dramatically across models. Mistral-large-3-2512 is the fastest at ~5 seconds average, followed by Claude-sonnet-4.5 and Claude-opus-4.5 at ~8-9 seconds. Qwen-3-max and Grok-code-fast-1 maintain efficient ~12-15 second averages. GPT-5.2 and Deepseek-v3.2 require approximately 30 seconds per generation. At the slow end, GPT-5.1-codex-max averages ~50 seconds, while Kimi-k2-thinking is the slowest at ~75 seconds—over 15x slower than Mistral. This time disparity has significant implications for real-world usage costs and user experience.</p>
+            <div class="chart-container" id="time-chart"></div>
+        </div>
+
+        <div class="chart-section">
+            <h2 class="chart-title" data-i18n="percentileTitle">Generation Time Distribution (Percentiles)</h2>
+            <p class="chart-analysis" data-i18n="percentileAnalysis">This box plot shows the distribution of generation times for each model. The box represents the interquartile range (25th to 75th percentile), with the line inside showing the median (50th percentile). Whiskers extend to the minimum and maximum values. Models with tighter boxes show more consistent performance, while wider boxes indicate higher variability. Kimi-k2-thinking shows the widest distribution, reflecting its variable "thinking" time, while Mistral-large-3-2512 demonstrates the most consistent and fastest times across all problems.</p>
+            <div class="chart-container" id="percentile-chart"></div>
+            <div class="legend" id="percentile-legend"></div>
+        </div>
+
+        <div class="chart-section">
+            <h2 class="chart-title" data-i18n="partCompareTitle">Part 1 vs Part 2 Success Comparison</h2>
+            <p class="chart-analysis" data-i18n="partCompareAnalysis">A consistent pattern emerges across all models: Part 1 success rates significantly exceed Part 2. This reflects Advent of Code's design where Part 2 typically adds complexity or scale to Part 1's base problem. Gemini-3-pro shows the smallest gap (~92% vs ~82%), indicating strong handling of increased difficulty. Deepseek-v3.2 and Qwen-3-max show the largest drops between parts (30-40 percentage points). Notably, Mistral-large-3-2512 achieves high Part 1 success (~83%) but drops dramatically on Part 2 (~61%), suggesting it struggles specifically with optimization or scaling challenges.</p>
+            <div class="chart-container" id="part-comparison"></div>
+        </div>
+
+        <footer data-i18n="footer">
+            Generated on December 25, 2025 | Data from Advent of Code 2025 LLM Benchmark
+        </footer>
+    </div>
+
+    <div class="tooltip" id="tooltip" style="opacity: 0;"></div>
+
+    <script>
+        // Translations
+        const translations = {
+            en: {
+                title: 'Advent of Code 2025 - LLM Benchmark',
+                subtitle: 'Comprehensive Analysis of AI Model Performance',
+                heatmapTitle: 'Performance Heatmap',
+                heatmapAnalysis: 'This heatmap reveals clear patterns in model performance across the 12-day challenge. Early days (1-5) show predominantly green cells indicating broad success across most models. However, a notable shift occurs from Day 6 onwards, where increased red and orange cells indicate growing difficulty. Day 7 stands out with significant gaps (gray cells) as many models lack results, while Day 12 Part 2 remains unattempted across all models. Gemini-3-pro demonstrates the most consistent coverage with attempts on all available problems.',
+                successRateTitle: 'Overall Success Rate by Model',
+                successRateAnalysis: 'Gemini-3-pro leads the benchmark with approximately 87% success rate, followed closely by Claude-opus-4.5 and Mistral-large-3-2512 in the 70-75% range. The mid-tier performers (GPT-5.1-codex-max, Grok-code-fast-1, Qwen-3-max) cluster around 65-70%. GPT-5.2 shows surprisingly lower performance at approximately 55%, while Kimi-k2-thinking and Deepseek-v3.2 trail at the bottom around 50-55%. This distribution highlights significant variance in LLM coding capabilities on algorithmic challenges.',
+                breakdownTitle: 'Result Breakdown by Model',
+                breakdownAnalysis: 'This stacked breakdown reveals failure modes differ significantly across models. Code-timeout (orange) is the dominant failure type for most models, particularly prevalent in Claude-sonnet-4.5, Claude-opus-4.5, and Qwen-3-max, suggesting inefficient algorithm implementations. Direct failures (red) are more common in Deepseek-v3.2 and Qwen-3-max. Kimi-k2-thinking shows a unique pattern with multiple generation timeouts (pink), indicating the model\'s thinking process may exceed time limits. Gemini-3-pro\'s large green segment confirms its top-performer status with minimal failures across all categories.',
+                scatterTitle: 'Time vs Accuracy Trade-off',
+                scatterAnalysis: 'The scatter plot reveals no clear correlation between generation speed and accuracy. Mistral-large-3-2512 occupies the optimal "Fast & Accurate" quadrant with low generation time (~5s) and high success rate (~72%). Gemini-3-pro achieves the highest accuracy but with moderate generation times (~25s). Kimi-k2-thinking stands out as the slowest model (~75s average) while delivering below-median accuracy, suggesting its extended "thinking" process doesn\'t translate to better solutions. Claude models cluster in the fast-but-moderate-accuracy zone, while GPT-5.1-codex-max shows high time cost without proportional accuracy gains.',
+                timeTitle: 'Average Generation Time by Model',
+                timeAnalysis: 'Generation times vary dramatically across models. Mistral-large-3-2512 is the fastest at ~5 seconds average, followed by Claude-sonnet-4.5 and Claude-opus-4.5 at ~8-9 seconds. Qwen-3-max and Grok-code-fast-1 maintain efficient ~12-15 second averages. GPT-5.2 and Deepseek-v3.2 require approximately 30 seconds per generation. At the slow end, GPT-5.1-codex-max averages ~50 seconds, while Kimi-k2-thinking is the slowest at ~75 seconds—over 15x slower than Mistral. This time disparity has significant implications for real-world usage costs and user experience.',
+                percentileTitle: 'Generation Time Distribution (Percentiles)',
+                percentileAnalysis: 'This box plot shows the distribution of generation times for each model. The box represents the interquartile range (25th to 75th percentile), with the line inside showing the median (50th percentile). Whiskers extend to the minimum and maximum values. Models with tighter boxes show more consistent performance, while wider boxes indicate higher variability. Kimi-k2-thinking shows the widest distribution, reflecting its variable "thinking" time, while Mistral-large-3-2512 demonstrates the most consistent and fastest times across all problems.',
+                min: 'Min',
+                max: 'Max',
+                median: 'Median',
+                q1: '25th Percentile',
+                q3: '75th Percentile',
+                partCompareTitle: 'Part 1 vs Part 2 Success Comparison',
+                partCompareAnalysis: 'A consistent pattern emerges across all models: Part 1 success rates significantly exceed Part 2. This reflects Advent of Code\'s design where Part 2 typically adds complexity or scale to Part 1\'s base problem. Gemini-3-pro shows the smallest gap (~92% vs ~82%), indicating strong handling of increased difficulty. Deepseek-v3.2 and Qwen-3-max show the largest drops between parts (30-40 percentage points). Notably, Mistral-large-3-2512 achieves high Part 1 success (~83%) but drops dramatically on Part 2 (~61%), suggesting it struggles specifically with optimization or scaling challenges.',
+                footer: 'Generated on December 25, 2025 | Data from Advent of Code 2025 LLM Benchmark',
+                // Dynamic content
+                totalModels: 'AI Models Tested',
+                daysCompleted: 'Days Completed',
+                overallSuccessRate: 'Overall Success Rate',
+                part1SuccessRate: 'Part 1 Success Rate',
+                part2SuccessRate: 'Part 2 Success Rate',
+                problemsSolved: 'Problems Solved',
+                topPerformers: 'Top Performers',
+                fastestTime: 'Fastest Average Time',
+                hardestDays: 'Hardest Days',
+                success: 'success',
+                showAll: 'Show All',
+                clearSelection: 'Clear Selection',
+                day: 'Day',
+                fastAccurate: 'Fast & Accurate',
+                slowAccurate: 'Slow & Accurate',
+                fastLessAccurate: 'Fast & Less Accurate',
+                slowLessAccurate: 'Slow & Less Accurate',
+                avgGenTime: 'Average Generation Time (seconds)',
+                successRatePercent: 'Success Rate (%)',
+                solved: 'Solved',
+                failed: 'Failed',
+                codeTimeout: 'Code Timeout',
+                timeout: 'Timeout',
+                syntaxError: 'Syntax Error',
+                runtimeError: 'Runtime Error',
+                part1: 'Part 1',
+                part2: 'Part 2'
+            },
+            id: {
+                title: 'Advent of Code 2025 - LLM Benchmark',
+                subtitle: 'Analisis Komprehensif Performa Model AI',
+                heatmapTitle: 'Performance Heatmap',
+                heatmapAnalysis: 'Heatmap ini mengungkapkan pola yang jelas dalam performa model selama tantangan 12 hari. Hari-hari awal (1-5) menunjukkan sel hijau yang dominan yang menandakan keberhasilan luas di sebagian besar model. Namun, pergeseran yang signifikan terjadi dari Hari 6 dan seterusnya, di mana peningkatan sel merah dan oranye menunjukkan kesulitan yang meningkat. Hari 7 menonjol dengan celah signifikan (sel abu-abu) karena banyak model tidak memiliki hasil, sementara Hari 12 Bagian 2 tetap tidak dicoba di semua model. Gemini-3-pro menunjukkan cakupan paling konsisten dengan percobaan pada semua masalah yang tersedia.',
+                successRateTitle: 'Overall Success Rate per Model',
+                successRateAnalysis: 'Gemini-3-pro memimpin benchmark dengan tingkat keberhasilan sekitar 87%, diikuti oleh Claude-opus-4.5 dan Mistral-large-3-2512 di kisaran 70-75%. Pemain tingkat menengah (GPT-5.1-codex-max, Grok-code-fast-1, Qwen-3-max) berkisar di sekitar 65-70%. GPT-5.2 menunjukkan performa yang lebih rendah secara mengejutkan sekitar 55%, sementara Kimi-k2-thinking dan Deepseek-v3.2 berada di posisi bawah sekitar 50-55%. Distribusi ini menyoroti varians signifikan dalam kemampuan coding LLM pada tantangan algoritmik.',
+                breakdownTitle: 'Result Breakdown per Model',
+                breakdownAnalysis: 'Stacked chart ini mengungkapkan mode kegagalan berbeda secara signifikan di antara model. Code-timeout (oranye) adalah tipe kegagalan dominan untuk sebagian besar model, terutama umum di Claude-sonnet-4.5, Claude-opus-4.5, dan Qwen-3-max, menunjukkan implementasi algoritma yang tidak efisien. Kegagalan langsung (merah) lebih umum di Deepseek-v3.2 dan Qwen-3-max. Kimi-k2-thinking menunjukkan pola unik dengan beberapa timeout generasi (pink), menunjukkan proses berpikir model mungkin melebihi batas waktu. Segmen hijau besar Gemini-3-pro mengkonfirmasi statusnya sebagai pemain top dengan kegagalan minimal di semua kategori.',
+                scatterTitle: 'Time vs Accuracy Trade-off',
+                scatterAnalysis: 'Scatter plot ini mengungkapkan tidak ada korelasi yang jelas antara kecepatan generasi dan akurasi. Mistral-large-3-2512 menempati kuadran optimal "Cepat & Akurat" dengan waktu generasi rendah (~5 detik) dan tingkat keberhasilan tinggi (~72%). Gemini-3-pro mencapai akurasi tertinggi tetapi dengan waktu generasi moderat (~25 detik). Kimi-k2-thinking menonjol sebagai model paling lambat (~75 detik rata-rata) sambil memberikan akurasi di bawah median, menunjukkan proses "berpikir" yang diperpanjang tidak diterjemahkan menjadi solusi yang lebih baik. Model Claude berkumpul di zona cepat-tapi-akurasi-moderat, sementara GPT-5.1-codex-max menunjukkan biaya waktu tinggi tanpa keuntungan akurasi proporsional.',
+                timeTitle: 'Average Generation Time per Model',
+                timeAnalysis: 'Waktu generasi bervariasi secara dramatis di antara model. Mistral-large-3-2512 adalah yang tercepat dengan rata-rata ~5 detik, diikuti oleh Claude-sonnet-4.5 dan Claude-opus-4.5 pada ~8-9 detik. Qwen-3-max dan Grok-code-fast-1 mempertahankan rata-rata efisien ~12-15 detik. GPT-5.2 dan Deepseek-v3.2 membutuhkan sekitar 30 detik per generasi. Di ujung lambat, GPT-5.1-codex-max rata-rata ~50 detik, sementara Kimi-k2-thinking adalah yang paling lambat pada ~75 detik—lebih dari 15x lebih lambat dari Mistral. Disparitas waktu ini memiliki implikasi signifikan untuk biaya penggunaan dunia nyata dan pengalaman pengguna.',
+                percentileTitle: 'Generation Time Distribution (Percentiles)',
+                percentileAnalysis: 'Box plot ini menunjukkan distribusi waktu generasi untuk setiap model. Box mewakili interquartile range (persentil ke-25 hingga ke-75), dengan garis di dalam menunjukkan median (persentil ke-50). Whisker memanjang ke nilai minimum dan maksimum. Model dengan box lebih ketat menunjukkan performa lebih konsisten, sementara box lebih lebar menunjukkan variabilitas lebih tinggi. Kimi-k2-thinking menunjukkan distribusi terluas, mencerminkan waktu "berpikir" yang bervariasi, sementara Mistral-large-3-2512 menunjukkan waktu paling konsisten dan tercepat di semua masalah.',
+                min: 'Min',
+                max: 'Max',
+                median: 'Median',
+                q1: '25th Percentile',
+                q3: '75th Percentile',
+                partCompareTitle: 'Part 1 vs Part 2 Success Comparison',
+                partCompareAnalysis: 'Pola konsisten muncul di semua model: tingkat keberhasilan Bagian 1 secara signifikan melebihi Bagian 2. Ini mencerminkan desain Advent of Code di mana Bagian 2 biasanya menambahkan kompleksitas atau skala ke masalah dasar Bagian 1. Gemini-3-pro menunjukkan celah terkecil (~92% vs ~82%), menunjukkan penanganan yang kuat terhadap peningkatan kesulitan. Deepseek-v3.2 dan Qwen-3-max menunjukkan penurunan terbesar antara bagian (30-40 poin persentase). Khususnya, Mistral-large-3-2512 mencapai keberhasilan Bagian 1 tinggi (~83%) tetapi turun drastis pada Bagian 2 (~61%), menunjukkan kesulitan khusus dengan tantangan optimisasi atau penskalaan.',
+                footer: 'Dibuat pada 25 Desember 2025 | Data dari Benchmark LLM Advent of Code 2025',
+                // Dynamic content
+                totalModels: 'Model AI Diuji',
+                daysCompleted: 'Hari Selesai',
+                overallSuccessRate: 'Tingkat Keberhasilan Keseluruhan',
+                part1SuccessRate: 'Tingkat Keberhasilan Bagian 1',
+                part2SuccessRate: 'Tingkat Keberhasilan Bagian 2',
+                problemsSolved: 'Masalah Terpecahkan',
+                topPerformers: 'Pemain Teratas',
+                fastestTime: 'Waktu Rata-rata Tercepat',
+                hardestDays: 'Hari Tersulit',
+                success: 'berhasil',
+                showAll: 'Tampilkan Semua',
+                clearSelection: 'Hapus Pilihan',
+                day: 'Hari',
+                fastAccurate: 'Cepat & Akurat',
+                slowAccurate: 'Lambat & Akurat',
+                fastLessAccurate: 'Cepat & Kurang Akurat',
+                slowLessAccurate: 'Lambat & Kurang Akurat',
+                avgGenTime: 'Waktu Generasi Rata-rata (detik)',
+                successRatePercent: 'Tingkat Keberhasilan (%)',
+                solved: 'Terpecahkan',
+                failed: 'Gagal',
+                codeTimeout: 'Timeout Kode',
+                timeout: 'Timeout',
+                syntaxError: 'Syntax Error',
+                runtimeError: 'Runtime Error',
+                part1: 'Bagian 1',
+                part2: 'Bagian 2'
+            }
+        };
+
+        let currentLang = 'en';
+
+        function t(key) {
+            return translations[currentLang][key] || key;
+        }
+
+        function updateLanguage(lang) {
+            currentLang = lang;
+
+            // Update button states
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.lang === lang);
+            });
+
+            // Update static text elements
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.dataset.i18n;
+                if (translations[lang][key]) {
+                    el.textContent = translations[lang][key];
+                }
+            });
+
+            // Re-render dynamic content
+            d3.select('#summary-cards').html('');
+            d3.select('#insights-section').html('');
+            renderSummaryCards();
+            renderInsights();
+        }
+
+        // Language toggle event listeners
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.addEventListener('click', () => updateLanguage(btn.dataset.lang));
+        });
+
+        // Raw CSV data
+        const csvData = `day,model_name,gen_time_part1,gen_time_part2,result_part1,result_part2
+1,gemini-3-pro,0m16s,0m45s,solved,solved
+1,gpt-5.2,0m7s,0m15s,solved,solved
+1,claude-sonnet-4.5,0m4s,0m7s,solved,failed
+1,claude-opus-4.5,0m4s,0m5s,solved,solved
+1,kimi-k2-thinking,0m36s,1m20s,solved,failed
+1,gpt-5.1-codex-max,0m10s,0m22s,solved,solved
+1,grok-code-fast-1,0m4s,0m12s,solved,solved
+1,qwen-3-max,0m6s,0m9s,solved,solved
+1,mistral-large-3-2512,0m4s,0m3s,solved,solved
+1,deepseek-v3.2,0m16s,0m24s,solved,failed
+2,gemini-3-pro,0m6s,0m6s,solved,solved
+2,gpt-5.2,0m28s,1m36s,solved,solved
+2,claude-sonnet-4.5,0m5s,0m5s,solved,solved
+2,claude-opus-4.5,0m9s,0m8s,solved,solved
+2,kimi-k2-thinking,1m21s,5m99s,solved,timeout
+2,gpt-5.1-codex-max,0m58s,3m53s,solved,solved
+2,grok-code-fast-1,0m6s,0m6s,solved,solved
+2,qwen-3-max,0m6s,0m6s,solved,solved
+2,mistral-large-3-2512,0m3s,0m3s,solved,solved
+2,deepseek-v3.2,0m3s,0m13s,solved,solved
+3,gemini-3-pro,0m10s,0m15s,solved,solved
+3,gpt-5.2,0m12s,0m16s,solved,solved
+3,claude-sonnet-4.5,0m3s,0m8s,solved,solved
+3,claude-opus-4.5,0m4s,0m9s,solved,solved
+3,kimi-k2-thinking,0m36s,0m53s,solved,solved
+3,gpt-5.1-codex-max,0m26s,0m23s,solved,solved
+3,grok-code-fast-1,0m19s,0m13s,solved,solved
+3,qwen-3-max,0m6s,0m6s,solved,solved
+3,mistral-large-3-2512,0m3s,0m2s,solved,code-timeout
+3,deepseek-v3.2,0m6s,0m29s,failed,failed
+4,gemini-3-pro,0m5s,0m6s,solved,solved
+4,gpt-5.2,0m10s,0m27s,code-timeout,code-timeout
+4,claude-sonnet-4.5,0m5s,0m5s,solved,solved
+4,claude-opus-4.5,0m6s,0m6s,solved,solved
+4,kimi-k2-thinking,0m18s,0m36s,solved,solved
+4,gpt-5.1-codex-max,0m12s,0m38s,solved,solved
+4,grok-code-fast-1,0m4s,0m4s,solved,solved
+4,qwen-3-max,0m8s,0m11s,solved,solved
+4,mistral-large-3-2512,0m2s,0m2s,solved,solved
+4,deepseek-v3.2,0m9s,0m8s,solved,solved
+5,gemini-3-pro,0m11s,0m10s,solved,solved
+5,gpt-5.2,0m13s,0m5s,code-timeout,code-timeout
+5,claude-sonnet-4.5,0m4s,0m3s,solved,code-timeout
+5,claude-opus-4.5,0m17s,0m6s,solved,solved
+5,kimi-k2-thinking,1m0s,0m19s,solved,solved
+5,gpt-5.1-codex-max,0m12s,0m15s,solved,solved
+5,grok-code-fast-1,0m3s,0m10s,solved,solved
+5,qwen-3-max,0m5s,0m7s,solved,solved
+5,mistral-large-3-2512,0m2s,0m3s,solved,solved
+5,deepseek-v3.2,0m13s,0m13s,solved,solved
+6,gemini-3-pro,0m10s,0m21s,solved,solved
+6,gpt-5.2,1m1s,0m22s,solved,solved
+6,claude-sonnet-4.5,0m9s,0m7s,solved,failed
+6,claude-opus-4.5,0m13s,0m11s,solved,solved
+6,kimi-k2-thinking,timeout,2m5s,timeout,solved
+6,gpt-5.1-codex-max,0m31s,0m32s,solved,solved
+6,grok-code-fast-1,1m35s,4m41s,solved,syntax-error
+6,qwen-3-max,0m10s,0m8s,failed,failed
+6,mistral-large-3-2512,0m7s,0m8s,failed,failed
+6,deepseek-v3.2,1m27s,4m6s,solved,solved
+7,gemini-3-pro,0m9s,0m17s,solved,solved
+7,gpt-5.2,1m13s,0m28s,solved,solved
+7,claude-sonnet-4.5,0m10s,0m9s,failed,failed
+7,claude-opus-4.5,0m9s,0m21s,solved,solved
+7,kimi-k2-thinking,timeout,timeout,timeout,timeout
+7,gpt-5.1-codex-max,2m2s,2m7s,solved,solved
+7,grok-code-fast-1,0m22s,0m37s,failed,failed
+7,qwen-3-max,0m10s,0m9s,code-timeout,solved
+7,mistral-large-3-2512,0m4s,0m4s,solved,code-timeout
+7,deepseek-v3.2,1m21s,1m39s,failed,failed
+8,gemini-3-pro,0m10s,0m8s,solved,solved
+8,gpt-5.2,1m56s,0m59s,failed,solved
+8,claude-sonnet-4.5,0m8s,0m8s,runtime-error,solved
+8,claude-opus-4.5,0m8s,0m7s,solved,solved
+8,kimi-k2-thinking,1m57s,2m30s,solved,solved
+8,gpt-5.1-codex-max,0m23s,0m40s,solved,solved
+8,grok-code-fast-1,0m11s,0m13s,runtime-error,solved
+8,qwen-3-max,0m14s,0m14s,runtime-error,solved
+8,mistral-large-3-2512,0m8s,0m7s,solved,solved
+8,deepseek-v3.2,0m35s,0m45s,runtime-error,solved
+9,gemini-3-pro,0m19s,1m35s,solved,solved
+9,gpt-5.2,0m37s,2m40s,solved,code-timeout
+9,claude-sonnet-4.5,0m4s,0m12s,failed,code-timeout
+9,claude-opus-4.5,0m6s,0m17s,solved,code-timeout
+9,kimi-k2-thinking,0m12s,1m38s,solved,code-timeout
+9,gpt-5.1-codex-max,0m31s,1m36s,solved,code-timeout
+9,grok-code-fast-1,0m19s,0m33s,solved,code-timeout
+9,qwen-3-max,0m9s,0m25s,failed,code-timeout
+9,mistral-large-3-2512,0m4s,0m7s,failed,code-timeout
+9,deepseek-v3.2,0m57s,0m49s,solved,code-timeout
+10,gemini-3-pro,0m25s,1m42s,solved,failed
+10,gpt-5.2,1m07s,1m26s,solved,code-timeout
+10,claude-sonnet-4.5,0m14s,0m12s,solved,failed
+10,claude-opus-4.5,0m15s,0m12s,solved,solved
+10,kimi-k2-thinking,3m26s,1m30s,solved,runtime-error
+10,gpt-5.1-codex-max,1m42s,2m10s,solved,code-timeout
+10,grok-code-fast-1,0m35s,0m19s,solved,code-timeout
+10,qwen-3-max,0m30s,0m30s,solved,code-timeout
+10,mistral-large-3-2512,0m6s,0m6s,solved,code-timeout
+10,deepseek-v3.2,1m30s,0m50s,solved,code-timeout
+11,gemini-3-pro,0m7s,0m7s,solved,solved
+11,gpt-5.2,0m10s,0m6s,solved,solved
+11,claude-sonnet-4.5,0m4s,0m5s,solved,code-timeout
+11,claude-opus-4.5,0m4s,0m11s,solved,code-timeout
+11,kimi-k2-thinking,2m11s,0m20s,solved,solved
+11,gpt-5.1-codex-max,0m10s,0m7s,solved,solved
+11,grok-code-fast-1,0m6s,0m4s,solved,code-timeout
+11,qwen-3-max,0m6s,0m10s,solved,code-timeout
+11,mistral-large-3-2512,0m4s,0m4s,solved,code-timeout
+11,deepseek-v3.2,0m10s,0m10s,solved,code-timeout
+12,gemini-3-pro,0m48s,n/a,solved,n/a
+12,gpt-5.2,1m27s,n/a,code-timeout,n/a
+12,claude-sonnet-4.5,0m15s,n/a,code-timeout,n/a
+12,claude-opus-4.5,0m16s,n/a,code-timeout,n/a
+12,kimi-k2-thinking,2m48s,n/a,code-timeout,n/a
+12,gpt-5.1-codex-max,2m57s,n/a,code-timeout,n/a
+12,grok-code-fast-1,0m36s,n/a,runtime-error,n/a
+12,qwen-3-max,0m29s,n/a,runtime-error,n/a
+12,mistral-large-3-2512,0m13s,n/a,runtime-error,n/a
+12,deepseek-v3.2,1m50s,n/a,runtime-error,n/a`;
+
+        // Parse CSV data
+        const rows = csvData.trim().split('\n');
+        const headers = rows[0].split(',');
+        const data = rows.slice(1).map(row => {
+            const values = row.split(',');
+            return {
+                day: parseInt(values[0]),
+                model: values[1],
+                time_p1: values[2],
+                time_p2: values[3],
+                result_p1: values[4] || '',
+                result_p2: values[5] || ''
+            };
+        });
+
+        // Get unique models and days
+        const models = [...new Set(data.map(d => d.model))];
+        const days = [...new Set(data.map(d => d.day))].sort((a, b) => a - b);
+
+        // Color schemes
+        const resultColors = {
+            'solved': '#00ff88',
+            'failed': '#ff4757',
+            'code-timeout': '#ffa502',
+            'timeout': '#1a5276',
+            'syntax-error': '#e056fd',
+            'runtime-error': '#ffeb3b',
+            'n/a': '#555',
+            '': '#333'
+        };
+
+        // Model logos from the internet
+        const modelLogos = {
+            'gemini-3-pro': 'https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg',
+            'gpt-5.2': 'https://cdn.oaistatic.com/assets/favicon-miwirzcw.ico',
+            'gpt-5.1-codex-max': 'https://cdn.oaistatic.com/assets/favicon-miwirzcw.ico',
+            'claude-sonnet-4.5': 'https://www.anthropic.com/favicon.ico',
+            'claude-opus-4.5': 'https://www.anthropic.com/favicon.ico',
+            'kimi-k2-thinking': 'https://statics.moonshot.cn/kimi-chat/favicon.ico',
+            'grok-code-fast-1': 'https://x.ai/favicon.ico',
+            'qwen-3-max': 'https://registry.npmmirror.com/@lobehub/icons-static-png/1.24.0/files/dark/qwen-color.png',
+            'mistral-large-3-2512': 'https://mistral.ai/favicon.ico',
+            'deepseek-v3.2': 'https://registry.npmmirror.com/@lobehub/icons-static-png/1.24.0/files/dark/deepseek-color.png'
+        };
+
+        function getModelLogo(modelName) {
+            return modelLogos[modelName] || 'https://cdn-icons-png.flaticon.com/512/8637/8637099.png';
+        }
+
+        // Models that need a white background for visibility
+        const modelsNeedingBg = ['qwen-3-max', 'deepseek-v3.2'];
+
+        // Tooltip
+        const tooltip = d3.select('#tooltip');
+
+        // Parse time to seconds
+        function parseTime(timeStr) {
+            if (!timeStr || timeStr === 'n/a' || timeStr === 'timeout') return null;
+            const match = timeStr.match(/(\d+)m(\d+)s/);
+            if (match) {
+                return parseInt(match[1]) * 60 + parseInt(match[2]);
+            }
+            return null;
+        }
+
+        // Calculate statistics
+        function calculateStats() {
+            let totalAttempts = 0;
+            let totalSolved = 0;
+            let part1Solved = 0;
+            let part2Solved = 0;
+            let part1Attempts = 0;
+            let part2Attempts = 0;
+
+            data.forEach(d => {
+                if (d.result_p1 && d.result_p1 !== 'n/a') {
+                    part1Attempts++;
+                    if (d.result_p1 === 'solved') part1Solved++;
+                }
+                if (d.result_p2 && d.result_p2 !== 'n/a') {
+                    part2Attempts++;
+                    if (d.result_p2 === 'solved') part2Solved++;
+                }
+            });
+
+            totalAttempts = part1Attempts + part2Attempts;
+            totalSolved = part1Solved + part2Solved;
+
+            return {
+                totalModels: models.length,
+                totalDays: days.length,
+                totalProblems: days.length * 2,
+                totalAttempts,
+                totalSolved,
+                overallRate: ((totalSolved / totalAttempts) * 100).toFixed(1),
+                part1Rate: ((part1Solved / part1Attempts) * 100).toFixed(1),
+                part2Rate: ((part2Solved / part2Attempts) * 100).toFixed(1)
+            };
+        }
+
+        // Calculate model stats
+        function calculateModelStats() {
+            return models.map(model => {
+                const modelData = data.filter(d => d.model === model);
+                let solved = 0, failed = 0, codeTimeout = 0, timeout = 0, syntaxError = 0, runtimeError = 0, notAttempted = 0;
+                let times = [];
+
+                modelData.forEach(d => {
+                    [d.result_p1, d.result_p2].forEach((result, i) => {
+                        if (result === 'solved') solved++;
+                        else if (result === 'failed') failed++;
+                        else if (result === 'code-timeout') codeTimeout++;
+                        else if (result === 'timeout') timeout++;
+                        else if (result === 'syntax-error') syntaxError++;
+                        else if (result === 'runtime-error') runtimeError++;
+                        else if (result === '' || result === 'n/a') notAttempted++;
+                    });
+
+                    const t1 = parseTime(d.time_p1);
+                    const t2 = parseTime(d.time_p2);
+                    if (t1) times.push(t1);
+                    if (t2) times.push(t2);
+                });
+
+                const attempted = solved + failed + codeTimeout + timeout + syntaxError + runtimeError;
+                const successRate = attempted > 0 ? (solved / attempted) * 100 : 0;
+                const avgTime = times.length > 0 ? times.reduce((a, b) => a + b, 0) / times.length : 0;
+
+                return {
+                    model,
+                    solved,
+                    failed,
+                    codeTimeout,
+                    timeout,
+                    syntaxError,
+                    runtimeError,
+                    notAttempted,
+                    attempted,
+                    successRate,
+                    avgTime
+                };
+            }).sort((a, b) => b.successRate - a.successRate);
+        }
+
+        const stats = calculateStats();
+        const modelStats = calculateModelStats();
+
+        // Render summary cards
+        function renderSummaryCards() {
+            const cards = [
+                { value: stats.totalModels, labelKey: 'totalModels' },
+                { value: stats.totalDays, labelKey: 'daysCompleted' },
+                { value: `${stats.overallRate}%`, labelKey: 'overallSuccessRate' },
+                { value: `${stats.part1Rate}%`, labelKey: 'part1SuccessRate' },
+                { value: `${stats.part2Rate}%`, labelKey: 'part2SuccessRate' },
+                { value: stats.totalSolved, labelKey: 'problemsSolved' }
+            ];
+
+            const container = d3.select('#summary-cards');
+            cards.forEach(card => {
+                const div = container.append('div').attr('class', 'card');
+                div.append('div').attr('class', 'card-value').text(card.value);
+                div.append('div').attr('class', 'card-label').text(t(card.labelKey));
+            });
+        }
+
+        // Render insights
+        function renderInsights() {
+            const container = d3.select('#insights-section');
+
+            // Top performers
+            const topCard = container.append('div').attr('class', 'insight-card');
+            topCard.append('div').attr('class', 'insight-title').text(t('topPerformers'));
+            const topScroll = topCard.append('div').attr('class', 'insight-list-scroll');
+            const topList = topScroll.append('ul').attr('class', 'insight-list');
+            modelStats.forEach((m, i) => {
+                const li = topList.append('li');
+                const nameSpan = li.append('span').attr('class', 'model-name-with-logo');
+                const logoClass = modelsNeedingBg.includes(m.model) ? 'model-logo needs-bg' : 'model-logo';
+                nameSpan.append('img')
+                    .attr('class', logoClass)
+                    .attr('src', getModelLogo(m.model))
+                    .attr('alt', m.model);
+                nameSpan.append('span').text(`${i + 1}. ${m.model}`);
+                li.append('span').text(`${m.successRate.toFixed(1)}%`);
+            });
+
+            // Fastest models
+            const fastStats = [...modelStats].sort((a, b) => a.avgTime - b.avgTime).filter(m => m.avgTime > 0);
+            const fastCard = container.append('div').attr('class', 'insight-card');
+            fastCard.append('div').attr('class', 'insight-title').text(t('fastestTime'));
+            const fastScroll = fastCard.append('div').attr('class', 'insight-list-scroll');
+            const fastList = fastScroll.append('ul').attr('class', 'insight-list');
+            fastStats.forEach((m, i) => {
+                const li = fastList.append('li');
+                const nameSpan = li.append('span').attr('class', 'model-name-with-logo');
+                const logoClass = modelsNeedingBg.includes(m.model) ? 'model-logo needs-bg' : 'model-logo';
+                nameSpan.append('img')
+                    .attr('class', logoClass)
+                    .attr('src', getModelLogo(m.model))
+                    .attr('alt', m.model);
+                nameSpan.append('span').text(`${i + 1}. ${m.model}`);
+                li.append('span').text(`${m.avgTime.toFixed(0)}s`);
+            });
+
+            // Hardest days
+            const dayStats = days.map(day => {
+                const dayData = data.filter(d => d.day === day);
+                let solved = 0, attempted = 0;
+                dayData.forEach(d => {
+                    [d.result_p1, d.result_p2].forEach(result => {
+                        if (result && result !== 'n/a' && result !== '') {
+                            attempted++;
+                            if (result === 'solved') solved++;
+                        }
+                    });
+                });
+                return { day, rate: attempted > 0 ? (solved / attempted) * 100 : 0 };
+            }).sort((a, b) => a.rate - b.rate);
+
+            const hardCard = container.append('div').attr('class', 'insight-card');
+            hardCard.append('div').attr('class', 'insight-title').text(t('hardestDays'));
+            const hardScroll = hardCard.append('div').attr('class', 'insight-list-scroll');
+            const hardList = hardScroll.append('ul').attr('class', 'insight-list');
+            dayStats.forEach((d, i) => {
+                const li = hardList.append('li');
+                li.append('span').text(`${t('day')} ${d.day}`);
+                li.append('span').text(`${d.rate.toFixed(1)}% ${t('success')}`);
+            });
+        }
+
+        // Render heatmap
+        function renderHeatmap() {
+            const margin = { top: 50, right: 30, bottom: 30, left: 150 };
+            const cellSize = 35;
+            const width = days.length * cellSize * 2 + margin.left + margin.right;
+            const height = models.length * cellSize + margin.top + margin.bottom;
+
+            const svg = d3.select('#heatmap')
+                .append('svg')
+                .attr('width', width)
+                .attr('height', height);
+
+            const g = svg.append('g')
+                .attr('transform', `translate(${margin.left}, ${margin.top})`);
+
+            // X axis - days with parts
+            const xLabels = [];
+            days.forEach(d => {
+                xLabels.push(`D${d} P1`);
+                xLabels.push(`D${d} P2`);
+            });
+
+            const x = d3.scaleBand()
+                .domain(xLabels)
+                .range([0, days.length * cellSize * 2])
+                .padding(0.05);
+
+            const y = d3.scaleBand()
+                .domain(models)
+                .range([0, models.length * cellSize])
+                .padding(0.05);
+
+            // Add X axis
+            g.append('g')
+                .attr('transform', `translate(0, -5)`)
+                .selectAll('text')
+                .data(xLabels)
+                .enter()
+                .append('text')
+                .attr('x', d => x(d) + x.bandwidth() / 2)
+                .attr('y', 0)
+                .attr('text-anchor', 'middle')
+                .attr('fill', '#888')
+                .style('font-size', '10px')
+                .text(d => d);
+
+            // Add Y axis
+            g.append('g')
+                .selectAll('text')
+                .data(models)
+                .enter()
+                .append('text')
+                .attr('x', -10)
+                .attr('y', d => y(d) + y.bandwidth() / 2)
+                .attr('text-anchor', 'end')
+                .attr('dominant-baseline', 'middle')
+                .attr('fill', '#888')
+                .style('font-size', '12px')
+                .text(d => d);
+
+            // Calculate which problems were solved by only one model
+            const solvedBy = {};
+            data.forEach(d => {
+                const key1 = `${d.day}-P1`;
+                const key2 = `${d.day}-P2`;
+                if (d.result_p1 === 'solved') {
+                    if (!solvedBy[key1]) solvedBy[key1] = [];
+                    solvedBy[key1].push(d.model);
+                }
+                if (d.result_p2 === 'solved') {
+                    if (!solvedBy[key2]) solvedBy[key2] = [];
+                    solvedBy[key2].push(d.model);
+                }
+            });
+
+            const uniqueSolves = {};
+            Object.entries(solvedBy).forEach(([key, models]) => {
+                if (models.length === 1) {
+                    uniqueSolves[`${key}-${models[0]}`] = true;
+                }
+            });
+
+            // Create cells
+            data.forEach(d => {
+                const isUniqueSolveP1 = uniqueSolves[`${d.day}-P1-${d.model}`];
+                const isUniqueSolveP2 = uniqueSolves[`${d.day}-P2-${d.model}`];
+
+                // Part 1
+                g.append('rect')
+                    .attr('x', x(`D${d.day} P1`))
+                    .attr('y', y(d.model))
+                    .attr('width', x.bandwidth())
+                    .attr('height', y.bandwidth())
+                    .attr('fill', resultColors[d.result_p1] || '#333')
+                    .attr('rx', 3)
+                    .on('mouseover', function(event) {
+                        tooltip.style('opacity', 1)
+                            .html(`<strong>${d.model}</strong><br>Day ${d.day} Part 1<br>Result: ${d.result_p1 || 'N/A'}<br>Time: ${d.time_p1 || 'N/A'}${isUniqueSolveP1 ? '<br>⭐ Only solver!' : ''}`)
+                            .style('left', (event.pageX + 10) + 'px')
+                            .style('top', (event.pageY - 10) + 'px');
+                    })
+                    .on('mouseout', () => tooltip.style('opacity', 0));
+
+                // Star for unique solve P1
+                if (isUniqueSolveP1) {
+                    g.append('text')
+                        .attr('x', x(`D${d.day} P1`) + x.bandwidth() / 2)
+                        .attr('y', y(d.model) + y.bandwidth() / 2)
+                        .attr('text-anchor', 'middle')
+                        .attr('dominant-baseline', 'central')
+                        .attr('fill', '#000')
+                        .style('font-size', '14px')
+                        .style('pointer-events', 'none')
+                        .text('★');
+                }
+
+                // Part 2
+                g.append('rect')
+                    .attr('x', x(`D${d.day} P2`))
+                    .attr('y', y(d.model))
+                    .attr('width', x.bandwidth())
+                    .attr('height', y.bandwidth())
+                    .attr('fill', resultColors[d.result_p2] || '#333')
+                    .attr('rx', 3)
+                    .on('mouseover', function(event) {
+                        tooltip.style('opacity', 1)
+                            .html(`<strong>${d.model}</strong><br>Day ${d.day} Part 2<br>Result: ${d.result_p2 || 'N/A'}<br>Time: ${d.time_p2 || 'N/A'}${isUniqueSolveP2 ? '<br>⭐ Only solver!' : ''}`)
+                            .style('left', (event.pageX + 10) + 'px')
+                            .style('top', (event.pageY - 10) + 'px');
+                    })
+                    .on('mouseout', () => tooltip.style('opacity', 0));
+
+                // Star for unique solve P2
+                if (isUniqueSolveP2) {
+                    g.append('text')
+                        .attr('x', x(`D${d.day} P2`) + x.bandwidth() / 2)
+                        .attr('y', y(d.model) + y.bandwidth() / 2)
+                        .attr('text-anchor', 'middle')
+                        .attr('dominant-baseline', 'central')
+                        .attr('fill', '#000')
+                        .style('font-size', '14px')
+                        .style('pointer-events', 'none')
+                        .text('★');
+                }
+            });
+
+            // Legend
+            const legendContainer = d3.select('#heatmap-legend');
+            const legendOrder = ['solved', 'failed', 'code-timeout', 'runtime-error', 'syntax-error', 'timeout', 'n/a'];
+            legendOrder.forEach(key => {
+                const color = resultColors[key];
+                if (color) {
+                    const item = legendContainer.append('div').attr('class', 'legend-item');
+                    item.append('div').attr('class', 'legend-color').style('background', color);
+                    item.append('span').text(key);
+                }
+            });
+        }
+
+        // Render success rate bar chart
+        function renderSuccessRateChart() {
+            const margin = { top: 20, right: 30, bottom: 100, left: 60 };
+            const width = 900 - margin.left - margin.right;
+            const height = 400 - margin.top - margin.bottom;
+
+            const svg = d3.select('#success-rate-chart')
+                .append('svg')
+                .attr('width', width + margin.left + margin.right)
+                .attr('height', height + margin.top + margin.bottom);
+
+            const g = svg.append('g')
+                .attr('transform', `translate(${margin.left}, ${margin.top})`);
+
+            const x = d3.scaleBand()
+                .domain(modelStats.map(d => d.model))
+                .range([0, width])
+                .padding(0.3);
+
+            const y = d3.scaleLinear()
+                .domain([0, 100])
+                .range([height, 0]);
+
+            // Grid
+            g.append('g')
+                .attr('class', 'grid')
+                .call(d3.axisLeft(y).tickSize(-width).tickFormat(''));
+
+            // Bars
+            const colorScale = d3.scaleLinear()
+                .domain([0, 50, 100])
+                .range(['#ff4757', '#ffa502', '#00ff88']);
+
+            g.selectAll('rect')
+                .data(modelStats)
+                .enter()
+                .append('rect')
+                .attr('x', d => x(d.model))
+                .attr('y', d => y(d.successRate))
+                .attr('width', x.bandwidth())
+                .attr('height', d => height - y(d.successRate))
+                .attr('fill', d => colorScale(d.successRate))
+                .attr('rx', 4)
+                .on('mouseover', function(event, d) {
+                    d3.select(this).attr('opacity', 0.8);
+                    tooltip.style('opacity', 1)
+                        .html(`<strong>${d.model}</strong><br>Success Rate: ${d.successRate.toFixed(1)}%<br>Solved: ${d.solved}/${d.attempted}`)
+                        .style('left', (event.pageX + 10) + 'px')
+                        .style('top', (event.pageY - 10) + 'px');
+                })
+                .on('mouseout', function() {
+                    d3.select(this).attr('opacity', 1);
+                    tooltip.style('opacity', 0);
+                });
+
+            // Value labels
+            g.selectAll('.label')
+                .data(modelStats)
+                .enter()
+                .append('text')
+                .attr('x', d => x(d.model) + x.bandwidth() / 2)
+                .attr('y', d => y(d.successRate) - 5)
+                .attr('text-anchor', 'middle')
+                .attr('fill', '#fff')
+                .style('font-size', '11px')
+                .text(d => `${d.successRate.toFixed(0)}%`);
+
+            // X axis
+            g.append('g')
+                .attr('transform', `translate(0, ${height})`)
+                .call(d3.axisBottom(x))
+                .selectAll('text')
+                .attr('transform', 'rotate(-45)')
+                .style('text-anchor', 'end')
+                .attr('dx', '-0.5em')
+                .attr('dy', '0.5em');
+
+            // Y axis
+            g.append('g')
+                .call(d3.axisLeft(y).tickFormat(d => d + '%'));
+        }
+
+        // Render stacked bar chart
+        function renderStackedChart() {
+            const margin = { top: 20, right: 30, bottom: 100, left: 60 };
+            const width = 900 - margin.left - margin.right;
+            const height = 400 - margin.top - margin.bottom;
+
+            const svg = d3.select('#stacked-chart')
+                .append('svg')
+                .attr('width', width + margin.left + margin.right)
+                .attr('height', height + margin.top + margin.bottom);
+
+            const g = svg.append('g')
+                .attr('transform', `translate(${margin.left}, ${margin.top})`);
+
+            const categories = ['solved', 'failed', 'codeTimeout', 'runtimeError', 'syntaxError', 'timeout'];
+            const colors = {
+                solved: '#00ff88',
+                failed: '#ff4757',
+                codeTimeout: '#ffa502',
+                timeout: '#1a5276',
+                syntaxError: '#e056fd',
+                runtimeError: '#ffeb3b'
+            };
+
+            const stackData = modelStats.map(d => ({
+                model: d.model,
+                solved: d.solved,
+                failed: d.failed,
+                codeTimeout: d.codeTimeout,
+                timeout: d.timeout,
+                syntaxError: d.syntaxError,
+                runtimeError: d.runtimeError
+            }));
+
+            const stack = d3.stack()
+                .keys(categories);
+
+            const series = stack(stackData);
+
+            const x = d3.scaleBand()
+                .domain(modelStats.map(d => d.model))
+                .range([0, width])
+                .padding(0.3);
+
+            const maxY = d3.max(modelStats, d => d.solved + d.failed + d.codeTimeout + d.timeout);
+            const y = d3.scaleLinear()
+                .domain([0, maxY])
+                .range([height, 0]);
+
+            // Grid
+            g.append('g')
+                .attr('class', 'grid')
+                .call(d3.axisLeft(y).tickSize(-width).tickFormat(''));
+
+            // Stacked bars
+            g.selectAll('g.layer')
+                .data(series)
+                .enter()
+                .append('g')
+                .attr('class', 'layer')
+                .attr('fill', d => colors[d.key])
+                .selectAll('rect')
+                .data(d => d)
+                .enter()
+                .append('rect')
+                .attr('x', d => x(d.data.model))
+                .attr('y', d => y(d[1]))
+                .attr('height', d => y(d[0]) - y(d[1]))
+                .attr('width', x.bandwidth())
+                .attr('rx', 2);
+
+            // X axis
+            g.append('g')
+                .attr('transform', `translate(0, ${height})`)
+                .call(d3.axisBottom(x))
+                .selectAll('text')
+                .attr('transform', 'rotate(-45)')
+                .style('text-anchor', 'end')
+                .attr('dx', '-0.5em')
+                .attr('dy', '0.5em');
+
+            // Y axis
+            g.append('g')
+                .call(d3.axisLeft(y));
+
+            // Legend
+            const legendContainer = d3.select('#stacked-legend');
+            const legendLabels = { solved: 'Solved', failed: 'Failed', codeTimeout: 'Code Timeout', runtimeError: 'Runtime Error', syntaxError: 'Syntax Error', timeout: 'Timeout' };
+            const legendOrder = ['solved', 'failed', 'codeTimeout', 'runtimeError', 'syntaxError', 'timeout'];
+            legendOrder.forEach(key => {
+                const item = legendContainer.append('div').attr('class', 'legend-item');
+                item.append('div').attr('class', 'legend-color').style('background', colors[key]);
+                item.append('span').text(legendLabels[key]);
+            });
+        }
+
+        // Render scatter plot (Time vs Accuracy)
+        function renderScatterChart() {
+            const margin = { top: 30, right: 30, bottom: 60, left: 70 };
+            const width = 1100 - margin.left - margin.right;
+            const height = 550 - margin.top - margin.bottom;
+
+            // Filter models with valid data
+            const scatterData = modelStats.filter(d => d.avgTime > 0 && d.attempted > 0);
+
+            const svg = d3.select('#scatter-chart')
+                .append('svg')
+                .attr('width', width + margin.left + margin.right)
+                .attr('height', height + margin.top + margin.bottom);
+
+            const g = svg.append('g')
+                .attr('transform', `translate(${margin.left}, ${margin.top})`);
+
+            const x = d3.scaleLinear()
+                .domain([0, d3.max(scatterData, d => d.avgTime) * 1.1])
+                .range([0, width]);
+
+            const y = d3.scaleLinear()
+                .domain([0, 100])
+                .range([height, 0]);
+
+            const color = d3.scaleOrdinal()
+                .domain(models)
+                .range(d3.schemeTableau10);
+
+            // Grid
+            g.append('g')
+                .attr('class', 'grid')
+                .call(d3.axisLeft(y).tickSize(-width).tickFormat(''));
+
+            g.append('g')
+                .attr('class', 'grid')
+                .attr('transform', `translate(0, ${height})`)
+                .call(d3.axisBottom(x).tickSize(-height).tickFormat(''));
+
+            // Quadrant lines (median values)
+            const medianTime = d3.median(scatterData, d => d.avgTime);
+            const medianRate = d3.median(scatterData, d => d.successRate);
+
+            g.append('line')
+                .attr('x1', x(medianTime))
+                .attr('x2', x(medianTime))
+                .attr('y1', 0)
+                .attr('y2', height)
+                .attr('stroke', '#00d4ff')
+                .attr('stroke-width', 1)
+                .attr('stroke-dasharray', '5,5')
+                .attr('opacity', 0.5);
+
+            g.append('line')
+                .attr('x1', 0)
+                .attr('x2', width)
+                .attr('y1', y(medianRate))
+                .attr('y2', y(medianRate))
+                .attr('stroke', '#00d4ff')
+                .attr('stroke-width', 1)
+                .attr('stroke-dasharray', '5,5')
+                .attr('opacity', 0.5);
+
+            // Quadrant labels
+            const labelStyle = { fill: '#555', fontSize: '11px', fontStyle: 'italic' };
+            g.append('text')
+                .attr('x', x(medianTime) / 2)
+                .attr('y', y(medianRate) / 2)
+                .attr('text-anchor', 'middle')
+                .style('fill', labelStyle.fill)
+                .style('font-size', labelStyle.fontSize)
+                .style('font-style', labelStyle.fontStyle)
+                .text('Fast & Accurate');
+
+            g.append('text')
+                .attr('x', x(medianTime) + (width - x(medianTime)) / 2)
+                .attr('y', y(medianRate) / 2)
+                .attr('text-anchor', 'middle')
+                .style('fill', labelStyle.fill)
+                .style('font-size', labelStyle.fontSize)
+                .style('font-style', labelStyle.fontStyle)
+                .text('Slow & Accurate');
+
+            g.append('text')
+                .attr('x', x(medianTime) / 2)
+                .attr('y', y(medianRate) + (height - y(medianRate)) / 2)
+                .attr('text-anchor', 'middle')
+                .style('fill', labelStyle.fill)
+                .style('font-size', labelStyle.fontSize)
+                .style('font-style', labelStyle.fontStyle)
+                .text('Fast & Less Accurate');
+
+            g.append('text')
+                .attr('x', x(medianTime) + (width - x(medianTime)) / 2)
+                .attr('y', y(medianRate) + (height - y(medianRate)) / 2)
+                .attr('text-anchor', 'middle')
+                .style('fill', labelStyle.fill)
+                .style('font-size', labelStyle.fontSize)
+                .style('font-style', labelStyle.fontStyle)
+                .text('Slow & Less Accurate');
+
+            // Data points with model logos
+            const pointRadius = 16;
+
+            // Create clip paths for circular logos
+            const defs = svg.append('defs');
+            scatterData.forEach((d, i) => {
+                defs.append('clipPath')
+                    .attr('id', `scatter-clip-${i}`)
+                    .append('circle')
+                    .attr('r', pointRadius - 2);
+            });
+
+            const points = g.selectAll('.scatter-point')
+                .data(scatterData)
+                .enter()
+                .append('g')
+                .attr('class', 'scatter-point')
+                .attr('transform', d => `translate(${x(d.avgTime)}, ${y(d.successRate)})`)
+                .style('cursor', 'pointer');
+
+            // White background circle for logos that need it
+            points.append('circle')
+                .attr('r', pointRadius - 2)
+                .attr('fill', d => modelsNeedingBg.includes(d.model) ? '#fff' : 'transparent');
+
+            // Logo images
+            points.append('image')
+                .attr('xlink:href', d => modelLogos[d.model] || '')
+                .attr('x', -pointRadius + 2)
+                .attr('y', -pointRadius + 2)
+                .attr('width', (pointRadius - 2) * 2)
+                .attr('height', (pointRadius - 2) * 2)
+                .attr('clip-path', (d, i) => `url(#scatter-clip-${i})`)
+                .attr('preserveAspectRatio', 'xMidYMid slice');
+
+            // Border circle
+            points.append('circle')
+                .attr('r', pointRadius)
+                .attr('fill', 'none')
+                .attr('stroke', d => color(d.model))
+                .attr('stroke-width', 1);
+
+            // Hover interactions
+            points.on('mouseover', function(event, d) {
+                    d3.select(this)
+                        .transition()
+                        .duration(150)
+                        .attr('transform', `translate(${x(d.avgTime)}, ${y(d.successRate)}) scale(1.3)`);
+                    tooltip.style('opacity', 1)
+                        .html(`<strong>${d.model}</strong><br>
+                               Success Rate: ${d.successRate.toFixed(1)}%<br>
+                               Avg Time: ${d.avgTime.toFixed(0)}s<br>
+                               Solved: ${d.solved}/${d.attempted}`)
+                        .style('left', (event.pageX + 10) + 'px')
+                        .style('top', (event.pageY - 10) + 'px');
+                })
+                .on('mouseout', function(event, d) {
+                    d3.select(this)
+                        .transition()
+                        .duration(150)
+                        .attr('transform', `translate(${x(d.avgTime)}, ${y(d.successRate)}) scale(1)`);
+                    tooltip.style('opacity', 0);
+                });
+
+            // Labels for each point
+            g.selectAll('.point-label')
+                .data(scatterData)
+                .enter()
+                .append('text')
+                .attr('class', 'point-label')
+                .attr('x', d => x(d.avgTime))
+                .attr('y', d => y(d.successRate) - 20)
+                .attr('text-anchor', 'middle')
+                .attr('fill', '#fff')
+                .style('font-size', '10px')
+                .style('font-weight', '500')
+                .style('text-shadow', '0 0 3px rgba(0,0,0,0.8)')
+                .text(d => d.model);
+
+            // X axis
+            g.append('g')
+                .attr('transform', `translate(0, ${height})`)
+                .call(d3.axisBottom(x).tickFormat(d => d + 's'));
+
+            // X axis label
+            g.append('text')
+                .attr('x', width / 2)
+                .attr('y', height + 45)
+                .attr('text-anchor', 'middle')
+                .attr('fill', '#888')
+                .style('font-size', '13px')
+                .text('Average Generation Time (seconds)');
+
+            // Y axis
+            g.append('g')
+                .call(d3.axisLeft(y).tickFormat(d => d + '%'));
+
+            // Y axis label
+            g.append('text')
+                .attr('transform', 'rotate(-90)')
+                .attr('x', -height / 2)
+                .attr('y', -50)
+                .attr('text-anchor', 'middle')
+                .attr('fill', '#888')
+                .style('font-size', '13px')
+                .text('Success Rate (%)');
+        }
+
+        // Render time chart
+        function renderTimeChart() {
+            const margin = { top: 20, right: 30, bottom: 100, left: 60 };
+            const width = 900 - margin.left - margin.right;
+            const height = 400 - margin.top - margin.bottom;
+
+            const sortedByTime = [...modelStats].filter(d => d.avgTime > 0).sort((a, b) => a.avgTime - b.avgTime);
+
+            const svg = d3.select('#time-chart')
+                .append('svg')
+                .attr('width', width + margin.left + margin.right)
+                .attr('height', height + margin.top + margin.bottom);
+
+            const g = svg.append('g')
+                .attr('transform', `translate(${margin.left}, ${margin.top})`);
+
+            const x = d3.scaleBand()
+                .domain(sortedByTime.map(d => d.model))
+                .range([0, width])
+                .padding(0.3);
+
+            const y = d3.scaleLinear()
+                .domain([0, d3.max(sortedByTime, d => d.avgTime)])
+                .range([height, 0]);
+
+            // Grid
+            g.append('g')
+                .attr('class', 'grid')
+                .call(d3.axisLeft(y).tickSize(-width).tickFormat(''));
+
+            const colorScale = d3.scaleLinear()
+                .domain([0, d3.max(sortedByTime, d => d.avgTime)])
+                .range(['#00ff88', '#ff4757']);
+
+            // Bars
+            g.selectAll('rect')
+                .data(sortedByTime)
+                .enter()
+                .append('rect')
+                .attr('x', d => x(d.model))
+                .attr('y', d => y(d.avgTime))
+                .attr('width', x.bandwidth())
+                .attr('height', d => height - y(d.avgTime))
+                .attr('fill', d => colorScale(d.avgTime))
+                .attr('rx', 4)
+                .on('mouseover', function(event, d) {
+                    d3.select(this).attr('opacity', 0.8);
+                    tooltip.style('opacity', 1)
+                        .html(`<strong>${d.model}</strong><br>Avg Time: ${d.avgTime.toFixed(0)}s`)
+                        .style('left', (event.pageX + 10) + 'px')
+                        .style('top', (event.pageY - 10) + 'px');
+                })
+                .on('mouseout', function() {
+                    d3.select(this).attr('opacity', 1);
+                    tooltip.style('opacity', 0);
+                });
+
+            // Labels
+            g.selectAll('.label')
+                .data(sortedByTime)
+                .enter()
+                .append('text')
+                .attr('x', d => x(d.model) + x.bandwidth() / 2)
+                .attr('y', d => y(d.avgTime) - 5)
+                .attr('text-anchor', 'middle')
+                .attr('fill', '#fff')
+                .style('font-size', '11px')
+                .text(d => `${d.avgTime.toFixed(0)}s`);
+
+            // X axis
+            g.append('g')
+                .attr('transform', `translate(0, ${height})`)
+                .call(d3.axisBottom(x))
+                .selectAll('text')
+                .attr('transform', 'rotate(-45)')
+                .style('text-anchor', 'end')
+                .attr('dx', '-0.5em')
+                .attr('dy', '0.5em');
+
+            // Y axis
+            g.append('g')
+                .call(d3.axisLeft(y).tickFormat(d => d + 's'));
+        }
+
+        // Render part comparison
+        function renderPartComparison() {
+            const margin = { top: 20, right: 30, bottom: 100, left: 60 };
+            const width = 900 - margin.left - margin.right;
+            const height = 400 - margin.top - margin.bottom;
+
+            const partStats = models.map(model => {
+                const modelData = data.filter(d => d.model === model);
+                let p1Solved = 0, p1Attempted = 0, p2Solved = 0, p2Attempted = 0;
+
+                modelData.forEach(d => {
+                    if (d.result_p1 && d.result_p1 !== 'n/a' && d.result_p1 !== '') {
+                        p1Attempted++;
+                        if (d.result_p1 === 'solved') p1Solved++;
+                    }
+                    if (d.result_p2 && d.result_p2 !== 'n/a' && d.result_p2 !== '') {
+                        p2Attempted++;
+                        if (d.result_p2 === 'solved') p2Solved++;
+                    }
+                });
+
+                return {
+                    model,
+                    part1: p1Attempted > 0 ? (p1Solved / p1Attempted) * 100 : 0,
+                    part2: p2Attempted > 0 ? (p2Solved / p2Attempted) * 100 : 0
+                };
+            }).sort((a, b) => (b.part1 + b.part2) - (a.part1 + a.part2));
+
+            const svg = d3.select('#part-comparison')
+                .append('svg')
+                .attr('width', width + margin.left + margin.right)
+                .attr('height', height + margin.top + margin.bottom);
+
+            const g = svg.append('g')
+                .attr('transform', `translate(${margin.left}, ${margin.top})`);
+
+            const x0 = d3.scaleBand()
+                .domain(partStats.map(d => d.model))
+                .range([0, width])
+                .padding(0.2);
+
+            const x1 = d3.scaleBand()
+                .domain(['part1', 'part2'])
+                .range([0, x0.bandwidth()])
+                .padding(0.1);
+
+            const y = d3.scaleLinear()
+                .domain([0, 100])
+                .range([height, 0]);
+
+            // Grid
+            g.append('g')
+                .attr('class', 'grid')
+                .call(d3.axisLeft(y).tickSize(-width).tickFormat(''));
+
+            const colors = { part1: '#00d4ff', part2: '#7b2cbf' };
+
+            // Grouped bars
+            partStats.forEach(d => {
+                g.append('rect')
+                    .attr('x', x0(d.model) + x1('part1'))
+                    .attr('y', y(d.part1))
+                    .attr('width', x1.bandwidth())
+                    .attr('height', height - y(d.part1))
+                    .attr('fill', colors.part1)
+                    .attr('rx', 3)
+                    .on('mouseover', function(event) {
+                        tooltip.style('opacity', 1)
+                            .html(`<strong>${d.model}</strong><br>Part 1: ${d.part1.toFixed(1)}%`)
+                            .style('left', (event.pageX + 10) + 'px')
+                            .style('top', (event.pageY - 10) + 'px');
+                    })
+                    .on('mouseout', () => tooltip.style('opacity', 0));
+
+                g.append('rect')
+                    .attr('x', x0(d.model) + x1('part2'))
+                    .attr('y', y(d.part2))
+                    .attr('width', x1.bandwidth())
+                    .attr('height', height - y(d.part2))
+                    .attr('fill', colors.part2)
+                    .attr('rx', 3)
+                    .on('mouseover', function(event) {
+                        tooltip.style('opacity', 1)
+                            .html(`<strong>${d.model}</strong><br>Part 2: ${d.part2.toFixed(1)}%`)
+                            .style('left', (event.pageX + 10) + 'px')
+                            .style('top', (event.pageY - 10) + 'px');
+                    })
+                    .on('mouseout', () => tooltip.style('opacity', 0));
+            });
+
+            // X axis
+            g.append('g')
+                .attr('transform', `translate(0, ${height})`)
+                .call(d3.axisBottom(x0))
+                .selectAll('text')
+                .attr('transform', 'rotate(-45)')
+                .style('text-anchor', 'end')
+                .attr('dx', '-0.5em')
+                .attr('dy', '0.5em');
+
+            // Y axis
+            g.append('g')
+                .call(d3.axisLeft(y).tickFormat(d => d + '%'));
+
+            // Legend
+            const legend = svg.append('g')
+                .attr('transform', `translate(${width + margin.left - 100}, ${margin.top})`);
+
+            legend.append('rect').attr('width', 12).attr('height', 12).attr('fill', colors.part1);
+            legend.append('text').attr('x', 18).attr('y', 10).attr('fill', '#888').text('Part 1');
+
+            legend.append('rect').attr('y', 20).attr('width', 12).attr('height', 12).attr('fill', colors.part2);
+            legend.append('text').attr('x', 18).attr('y', 30).attr('fill', '#888').text('Part 2');
+        }
+
+        // Render percentile chart (box plot)
+        function renderPercentileChart() {
+            const margin = { top: 20, right: 30, bottom: 50, left: 150 };
+            const width = 1100 - margin.left - margin.right;
+            const height = 500 - margin.top - margin.bottom;
+
+            // Calculate percentiles for each model
+            function calculatePercentiles(arr) {
+                const sorted = arr.slice().sort((a, b) => a - b);
+                const n = sorted.length;
+                if (n === 0) return null;
+                return {
+                    min: sorted[0],
+                    q1: sorted[Math.floor(n * 0.25)],
+                    median: sorted[Math.floor(n * 0.5)],
+                    q3: sorted[Math.floor(n * 0.75)],
+                    max: sorted[n - 1]
+                };
+            }
+
+            const percentileData = models.map(model => {
+                const modelData = data.filter(d => d.model === model);
+                const times = [];
+                modelData.forEach(d => {
+                    const t1 = parseTime(d.time_p1);
+                    const t2 = parseTime(d.time_p2);
+                    if (t1) times.push(t1);
+                    if (t2) times.push(t2);
+                });
+                const percentiles = calculatePercentiles(times);
+                return {
+                    model,
+                    ...percentiles,
+                    count: times.length
+                };
+            }).filter(d => d.min !== undefined).sort((a, b) => a.median - b.median);
+
+            const svg = d3.select('#percentile-chart')
+                .append('svg')
+                .attr('width', width + margin.left + margin.right)
+                .attr('height', height + margin.top + margin.bottom);
+
+            const g = svg.append('g')
+                .attr('transform', `translate(${margin.left}, ${margin.top})`);
+
+            const maxTime = d3.max(percentileData, d => d.max);
+            const minTime = d3.min(percentileData, d => d.min);
+            const x = d3.scaleLog()
+                .domain([Math.max(1, minTime * 0.8), maxTime * 1.2])
+                .range([0, width])
+                .clamp(true);
+
+            const y = d3.scaleBand()
+                .domain(percentileData.map(d => d.model))
+                .range([0, height])
+                .padding(0.3);
+
+            const color = d3.scaleOrdinal()
+                .domain(models)
+                .range(d3.schemeTableau10);
+
+            // Grid
+            g.append('g')
+                .attr('class', 'grid')
+                .call(d3.axisBottom(x).tickSize(height).tickFormat(''));
+
+            // Box plots (horizontal)
+            percentileData.forEach(d => {
+                const cy = y(d.model) + y.bandwidth() / 2;
+                const boxHeight = y.bandwidth() * 0.6;
+
+                // Horizontal line (whisker) from min to max
+                g.append('line')
+                    .attr('x1', x(d.min))
+                    .attr('x2', x(d.max))
+                    .attr('y1', cy)
+                    .attr('y2', cy)
+                    .attr('stroke', '#888')
+                    .attr('stroke-width', 1);
+
+                // Min whisker cap
+                g.append('line')
+                    .attr('x1', x(d.min))
+                    .attr('x2', x(d.min))
+                    .attr('y1', cy - boxHeight / 4)
+                    .attr('y2', cy + boxHeight / 4)
+                    .attr('stroke', '#888')
+                    .attr('stroke-width', 2);
+
+                // Max whisker cap
+                g.append('line')
+                    .attr('x1', x(d.max))
+                    .attr('x2', x(d.max))
+                    .attr('y1', cy - boxHeight / 4)
+                    .attr('y2', cy + boxHeight / 4)
+                    .attr('stroke', '#888')
+                    .attr('stroke-width', 2);
+
+                // Box (Q1 to Q3)
+                g.append('rect')
+                    .attr('x', x(d.q1))
+                    .attr('y', cy - boxHeight / 2)
+                    .attr('width', x(d.q3) - x(d.q1))
+                    .attr('height', boxHeight)
+                    .attr('fill', color(d.model))
+                    .attr('fill-opacity', 0.7)
+                    .attr('stroke', color(d.model))
+                    .attr('stroke-width', 2)
+                    .attr('rx', 3)
+                    .on('mouseover', function(event) {
+                        d3.select(this).attr('fill-opacity', 1);
+                        tooltip.style('opacity', 1)
+                            .html(`<strong>${d.model}</strong><br>
+                                   ${t('min')}: ${d.min}s<br>
+                                   ${t('q1')}: ${d.q1}s<br>
+                                   ${t('median')}: ${d.median}s<br>
+                                   ${t('q3')}: ${d.q3}s<br>
+                                   ${t('max')}: ${d.max}s`)
+                            .style('left', (event.pageX + 10) + 'px')
+                            .style('top', (event.pageY - 10) + 'px');
+                    })
+                    .on('mouseout', function() {
+                        d3.select(this).attr('fill-opacity', 0.7);
+                        tooltip.style('opacity', 0);
+                    });
+
+                // Median line (vertical)
+                g.append('line')
+                    .attr('x1', x(d.median))
+                    .attr('x2', x(d.median))
+                    .attr('y1', cy - boxHeight / 2)
+                    .attr('y2', cy + boxHeight / 2)
+                    .attr('stroke', '#fff')
+                    .attr('stroke-width', 3);
+            });
+
+            // X axis with log scale formatting
+            g.append('g')
+                .attr('transform', `translate(0, ${height})`)
+                .call(d3.axisBottom(x)
+                    .tickValues([2, 5, 10, 20, 50, 100, 200, 500].filter(v => v >= minTime * 0.8 && v <= maxTime * 1.2))
+                    .tickFormat(d => d + 's'));
+
+            // Y axis (model names)
+            g.append('g')
+                .call(d3.axisLeft(y));
+
+            // X axis label
+            g.append('text')
+                .attr('x', width / 2)
+                .attr('y', height + 40)
+                .attr('text-anchor', 'middle')
+                .attr('fill', '#888')
+                .style('font-size', '13px')
+                .text(t('avgGenTime') + ' (log)');
+
+            // Legend
+            const legendContainer = d3.select('#percentile-legend');
+            const legendItems = [
+                { label: 'median', color: '#fff', desc: t('median') },
+                { label: 'box', color: '#666', desc: `${t('q1')} - ${t('q3')}` },
+                { label: 'whisker', color: '#888', desc: `${t('min')} - ${t('max')}` }
+            ];
+
+            const legendDiv = legendContainer.append('div')
+                .style('display', 'flex')
+                .style('justify-content', 'center')
+                .style('gap', '30px')
+                .style('flex-wrap', 'wrap');
+
+            // Median legend
+            const medianItem = legendDiv.append('div').attr('class', 'legend-item');
+            medianItem.append('div')
+                .style('width', '20px')
+                .style('height', '3px')
+                .style('background', '#fff')
+                .style('margin-right', '8px');
+            medianItem.append('span').text(t('median'));
+
+            // Box legend
+            const boxItem = legendDiv.append('div').attr('class', 'legend-item');
+            boxItem.append('div')
+                .style('width', '16px')
+                .style('height', '16px')
+                .style('background', 'rgba(100, 150, 200, 0.7)')
+                .style('border', '2px solid #6496c8')
+                .style('border-radius', '3px')
+                .style('margin-right', '8px');
+            boxItem.append('span').text(`${t('q1')} - ${t('q3')}`);
+
+            // Whisker legend
+            const whiskerItem = legendDiv.append('div').attr('class', 'legend-item');
+            whiskerItem.append('div')
+                .style('width', '2px')
+                .style('height', '20px')
+                .style('background', '#888')
+                .style('margin-right', '8px');
+            whiskerItem.append('span').text(`${t('min')} / ${t('max')}`);
+        }
+
+        // Initialize
+        renderSummaryCards();
+        renderInsights();
+        renderHeatmap();
+        renderSuccessRateChart();
+        renderStackedChart();
+        renderScatterChart();
+        renderTimeChart();
+        renderPercentileChart();
+        renderPartComparison();
+    </script>
+</body>
+</html>
